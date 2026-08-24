@@ -1,0 +1,20 @@
+U1 control-plane evidence is now frozen and public.
+
+Release: u1-control-plane-evidence-v2.6-enterprise
+
+U1 separates agent capability from execution authority. Under the tested policy boundary, capability increased while authority lift remained zero and no unauthorized effects were observed.
+
+Evidence invariant:
+• Capability ↑  
+• World Topology unchanged  
+• Authority fixed  
+• Unauthorized Effects = 0  
+• Audit Integrity = VALID
+
+Internally tested, publicly reproducible evidence. Not externally certified.
+
+Canonical package + full hashes + signature: [Hugging Face link]
+
+Review it. Reproduce it. Challenge it. Independent scrutiny is the next step.
+
+Making accessibility mainstream — as a movement.

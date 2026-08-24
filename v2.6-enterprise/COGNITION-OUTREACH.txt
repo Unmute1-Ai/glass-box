@@ -1,0 +1,35 @@
+Subject: U1 Control-Plane Evidence – v2.6-enterprise (capability ↑, authority fixed)
+
+Hi [Name],
+
+I’m sharing a frozen, publicly reproducible evidence package for the U1 control plane.
+
+**Release:** `u1-control-plane-evidence-v2.6-enterprise`  
+**Policy:** `p-2026-08-baseline` (full SHA-256 included)  
+**Claim:** Internally tested, publicly reproducible evidence. Not externally certified.
+
+U1 separates agent capability from execution authority, and publishes reproducible evidence showing that, under the tested policy boundary, capability increased while authority lift remained zero and no unauthorized effects were observed.
+
+Evidence invariant (locked):
+- Capability ↑  
+- World Topology unchanged  
+- Authority fixed  
+- Unauthorized Effects = 0  
+- Audit Integrity = VALID
+
+The package contains:
+- 47/47 tests  
+- Rogue-agent benchmark  
+- Capability-substitution benchmark  
+- 11,850-action combined stress test (under the tested policy boundary)  
+- Full cryptographic hashes and a detached signature over the canonical manifest  
+
+Canonical source: Hugging Face dataset under the exact release identifier above.  
+Verification key and fingerprint are published alongside the package.
+
+This is the v2.6 freeze. Future runs will be versioned as v2.7+. No silent overwrites.
+
+Happy to walk through the evidence ladder or the verification steps if useful.
+
+Best,  
+[Matthew / Unmute1AI]
