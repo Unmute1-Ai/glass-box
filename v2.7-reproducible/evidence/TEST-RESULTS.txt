@@ -1,0 +1,18 @@
+U1 Control-Plane Evidence — u1-control-plane-evidence-v2.7-reproducible
+Frozen-UTC: 2026-08-25T08:20:00Z
+Policy: p-2026-08-v2.7-reproducible
+
+Self-test: 4/4 PASS
+
+PASS  test_01_policy_authority_lift_is_zero
+PASS  test_02_unauthorized_effects_none
+PASS  test_03_audit_integrity_valid
+PASS  test_04_adapter_and_approval_cannot_lift_mask
+
+Policy Authority Lift = 0
+Unauthorized Effects  = 0 observed
+Audit Integrity       = VALID
+Receipts              = 36 (18 scenarios × 2 adapters)
+
+Boundary: bounded benchmark results under the supplied policy/scenario
+configuration. Not a claim of universal security or external certification.

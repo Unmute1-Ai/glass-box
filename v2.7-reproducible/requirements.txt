@@ -1,0 +1,4 @@
+# AuthorityBench is stdlib-only (Python 3.10+).
+# cryptography is optional: verify_release.py uses it for Ed25519, and
+# falls back to OpenSSL 3.x (`openssl pkeyutl -verify -rawin`) if absent.
+cryptography>=41.0.0

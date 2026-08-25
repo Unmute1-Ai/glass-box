@@ -1,0 +1,5 @@
+# U1 Control-Plane Evidence v2.7-reproducible
+# algorithm: Ed25519
+# encoding: raw-32-byte-hex
+# signed-object: MANIFEST.canonical.json
+65c39baa198787863e501dd2ced09c216f27af82f85d3067035e403d4a414dd9
