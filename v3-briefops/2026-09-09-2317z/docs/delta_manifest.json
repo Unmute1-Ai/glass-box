@@ -1,0 +1,24 @@
+{
+  "schema": "u1.briefops.v3.delta",
+  "run_date": "2026-09-09T23:17Z",
+  "baseline": "Unmute1-Ai/glass-box main @ b2f8095562e4ed086cf57ad19db6b1841808715c",
+  "invariant": "model capability can change without changing principal authority",
+  "stories": [
+    {"story":"Meta launches Muse with access to email, payments, health, shopping and smart-home apps","targets":["Sentinel v3","AuthorityBench v3","OmniSign","SIGNAL","PRIMER","U1 BriefOps"],"change":"Added domain-bound capability gate. Sensitive cross-domain transitions require explicit consent; credentials are bound to destination domain and exact action digest; safety-agent verdicts remain advisory."},
+    {"story":"NVIDIA expands AI for Media at IBC 2026","change":"no change","reason":"Existing SIGNAL generated-media provenance, accessibility-output and authenticity controls already cover AI localization/enhancement workflows."},
+    {"story":"SentinelOne expands Wayfinder Frontier AI Services with OpenAI cyber models","change":"no change","reason":"Latest Sentinel baseline already treats scanner/inspector findings as advisory evidence and requires explicit authority for consequential effects."},
+    {"story":"Mistral raises record EUR3B led by Samsung","change":"no change","reason":"Provider funding and scale affect vendor-risk context but do not create a new model-admission or authority primitive."},
+    {"story":"UChicago publishes helium-3 neutral-atom blueprint with projected >=3x tunneling rate versus lithium-6","targets":["AnnealMesh"],"change":"Added neutral-atom fermionic research descriptor; recorded as theoretical-blueprint maturity evidence with verified_quantum_advantage=false."}
+  ],
+  "safety": {
+    "external_scanner_or_inspector_advisory_only": true,
+    "sensitive_cross_domain_requires_explicit_consent": true,
+    "unverified_model_component_provenance_fails_closed": true,
+    "consequential_effect_requires_scoped_single_use_credential": true,
+    "financial_transactions_executed": false,
+    "health_system_writes_executed": false,
+    "physical_actuation_executed": false,
+    "official_emergency_alerts_issued": false,
+    "external_effects_executed": false
+  }
+}
