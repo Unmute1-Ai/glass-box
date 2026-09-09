@@ -1,0 +1,15 @@
+{
+  "schema": "u1.annealmesh.quantum-security-deployment.v3",
+  "id": "ionq-congruity360-quantum-safe-2026-09-08",
+  "deployment_class": "commercial_quantum_safe_network",
+  "reported_evidence": {
+    "contract_value_usd": 8180000,
+    "technologies": ["post_quantum_cryptography", "quantum_key_distribution"],
+    "scope": "enterprise unstructured-data protection in the United States"
+  },
+  "status": "commercial_maturity_signal",
+  "automatic_crypto_policy_change": false,
+  "verified_quantum_advantage": false,
+  "authority_effect": "none",
+  "note": "Commercial deployment evidence informs migration readiness. It does not automatically deprecate an algorithm, validate a workload advantage claim, or alter principal authority."
+}
