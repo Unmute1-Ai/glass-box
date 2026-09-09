@@ -1,0 +1,7 @@
+{
+  "command": "python -m pytest -q",
+  "returncode": 0,
+  "stdout": "6 passed in 0.06s",
+  "stderr": "",
+  "external_effects_executed": false
+}
