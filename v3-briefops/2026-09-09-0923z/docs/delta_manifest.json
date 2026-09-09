@@ -1,0 +1,19 @@
+{
+  "schema": "u1.briefops.v3.delta/2026-09-09T09:23Z",
+  "baseline": "U1 Sentinel v3 @ main 186a346770cc2970205ce783391d66699389041d",
+  "invariant": "Model capability may change without changing principal authority.",
+  "stories": [
+    {"story":"OpenAI says AI helped design Jalapeno chip; Samsung collaboration deepens","targets":["Sentinel v3","AuthorityBench v3","U1 BriefOps"],"change":"Added generated-design admission gate requiring independent toolchain verification, independent reviewer verification, and runtime digest match. Admission authority delta remains zero."},
+    {"story":"Meta Muse cross-app agent","targets":["Sentinel v3","AuthorityBench v3"],"change":"no change","reason":"Current baseline already implements bounded agent leases, sensitive cross-domain consent, provenance admission, and scoped one-use credentials."},
+    {"story":"Google Finland AI infrastructure investment","targets":["Sentinel v3","AnnealMesh"],"change":"no change","reason":"Current baseline already records sovereign deployment/data-residency metadata as evidence-only with authority_delta=0."},
+    {"story":"FTA Bus Safety, Accessibility, and Innovation Research Program","targets":["OmniSign","SIGNAL","PRIMER","U1 BriefOps"],"change":"Created partner/funding artifact for FTA-2026-004-TRI; no new security primitive."},
+    {"story":"Quantinuum $100M CHIPS trapped-ion manufacturing award","targets":["AnnealMesh"],"change":"no change","reason":"Current baseline already records manufacturing maturity/funding metadata and keeps verified_quantum_advantage false absent benchmark evidence."}
+  ],
+  "safety": {
+    "scanner_or_inspector_is_authority_grant": false,
+    "cross_domain_sensitive_transition_requires_explicit_consent": true,
+    "unverified_provenance_fails_closed": true,
+    "consequential_effect_requires_scoped_single_use_credential": true,
+    "external_effects_enabled": false
+  }
+}
