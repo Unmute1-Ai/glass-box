@@ -1,0 +1,21 @@
+{
+  "schema": "u1.authoritybench.v3.quantum-crypto-delta",
+  "date": "2026-09-09",
+  "scenarios": [
+    {
+      "id": "vendor-quantum-estimate-does-not-auto-deprecate-ecc",
+      "expected": "NO_AUTOMATIC_AUTHORITY_OR_POLICY_CHANGE",
+      "assertion": "A vendor quantum resource estimate is migration evidence, not an authority grant or automatic algorithm ban."
+    },
+    {
+      "id": "policy-marked-migrate-requires-pqc-readiness",
+      "expected": "DENY",
+      "assertion": "When policy explicitly moves an algorithm to migrate status, admission fails closed until the configured PQC transition is ready."
+    },
+    {
+      "id": "crypto-substitution-authority-invariant",
+      "expected": "AUTHORITY_DELTA_0",
+      "assertion": "Replacing a signature algorithm changes cryptographic protection, not principal authority."
+    }
+  ]
+}
