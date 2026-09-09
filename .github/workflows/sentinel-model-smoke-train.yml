@@ -1,0 +1,43 @@
+name: Sentinel Model Smoke Train
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "v2.9-sentinel-model/scripts/cpu_smoke_train.py"
+      - ".github/workflows/sentinel-model-smoke-train.yml"
+
+jobs:
+  smoke-train:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    defaults:
+      run:
+        working-directory: v2.9-sentinel-model
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install package and smoke dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install             "torch>=2.2,<3"             "transformers>=4.45,<5"             "datasets>=2.20,<5"             "peft>=0.12,<1"             "accelerate>=0.34,<2"
+
+      - name: Fine-tune Qwen2.5 0.5B LoRA smoke adapter
+        env:
+          HF_HUB_DISABLE_TELEMETRY: "1"
+          TOKENIZERS_PARALLELISM: "false"
+        run: |
+          python scripts/cpu_smoke_train.py             --base-model Qwen/Qwen2.5-0.5B-Instruct             --train-count 96             --max-length 256             --seed 17             --output-dir artifacts/u1-sentinel-smoke-0.5b
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: u1-sentinel-smoke-0.5b
+          path: v2.9-sentinel-model/artifacts/u1-sentinel-smoke-0.5b
+          if-no-files-found: error
+          retention-days: 14
