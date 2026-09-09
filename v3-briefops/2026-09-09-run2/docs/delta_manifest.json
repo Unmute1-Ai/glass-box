@@ -1,0 +1,13 @@
+{
+  "schema": "u1.briefops.v3.delta",
+  "date": "2026-09-09",
+  "baseline": "U1 Sentinel v3 / AuthorityBench v3",
+  "invariant": "model capability can change without changing principal authority",
+  "items": [
+    {"story":"OpenAI-Samsung next-generation chip collaboration","targets":["Sentinel v3","AuthorityBench v3"],"change":"Add compute-supplier/hardware-attestation provenance metadata as evidence-only; add supplier-swap authority invariant scenario."},
+    {"story":"Meta Muse cross-app autonomous agent launch","targets":["Sentinel v3","AuthorityBench v3","U1 BriefOps"],"change":"Add cross-app sensitive-domain benchmark cases and require explicit consent plus scoped one-use credentials for consequential effects."},
+    {"story":"Quantinuum $100M CHIPS R&D award","targets":["AnnealMesh"],"change":"Record trapped-ion manufacturing/funding maturity descriptor; verified_quantum_advantage remains false unless benchmark evidence exists."},
+    {"story":"Lighthouse Guild accessible AI workshop","targets":["OmniSign","SIGNAL","PRIMER"],"change":"Add visual_description modality to normalized accessibility adapters; no raw visual retention and no authority inheritance."},
+    {"story":"Mistral €3B frontier-model funding","targets":["Sentinel v3","AuthorityBench v3"],"change":"No new policy primitive. Record model-supplier substitution scenario only; stronger or better-funded suppliers do not gain authority."}
+  ]
+}
