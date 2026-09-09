@@ -1,0 +1,10 @@
+{
+  "generated_at": "2026-09-09T03:16:30-04:00",
+  "test_command": "python -m pytest -q test_delta.py",
+  "returncode": 0,
+  "stdout": "8 passed in 0.06s",
+  "stderr": "",
+  "unauthorized_effects": 0,
+  "authority_lift": 0,
+  "external_effects_executed": false
+}
