@@ -1,0 +1,21 @@
+{
+  "suite": "U1 BriefOps v3 Delta",
+  "date": "2026-09-09",
+  "baseline": "U1 Sentinel v3 / AuthorityBench v3",
+  "claims": {
+    "external_inspectors_advisory_only": true,
+    "model_substitution_authority_lift": 0,
+    "unverified_provenance_fail_closed": true,
+    "cross_domain_sensitive_consent_required": true,
+    "single_use_scoped_credentials_required": true,
+    "real_world_effects_executed": 0,
+    "local_test_status": "8 passed"
+  },
+  "story_delta": [
+    {"story":"OpenAI + Samsung next-generation chips","targets":["Sentinel v3","AnnealMesh"],"change":"compute provenance metadata; hardware identity cannot grant authority"},
+    {"story":"Meta Muse personal agent + autonomous safety monitor","targets":["Sentinel v3","AuthorityBench v3"],"change":"advisory-monitor non-override test and cross-domain app transition scenarios"},
+    {"story":"U.S. CHIPS quantum awards","targets":["AnnealMesh","Partner/Funding"],"change":"business metadata only; no verified-advantage or authority lift"},
+    {"story":"Brookings + ZERO TO THREE early-childhood AI symposium","targets":["PRIMER","Sentinel v3"],"change":"child_profile sensitive-domain consent boundary"},
+    {"story":"NVIDIA agreement to acquire Hugging Face","targets":["Model Registry","Sentinel v3","AnnealMesh"],"change":"registry ownership neutrality; signed artifact provenance remains mandatory"}
+  ]
+}
