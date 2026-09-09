@@ -1,0 +1,15 @@
+{
+  "schema": "u1.annealmesh.backend.v3",
+  "backend_id": "ionq-superion-256-2026-09-08",
+  "backend_class": "trapped_ion_quantum",
+  "reported_evidence": {
+    "physical_qubits": 256,
+    "first_qpu_chips_fabricated_at": "SkyWater",
+    "first_ions_trapped_in_prototype": true,
+    "customer_delivery_target": 2027
+  },
+  "annealmesh_status": "hardware_maturity_candidate",
+  "verified_quantum_advantage": false,
+  "authority_effect": "none",
+  "note": "Manufacturability and prototype milestones do not establish workload-level quantum advantage."
+}
