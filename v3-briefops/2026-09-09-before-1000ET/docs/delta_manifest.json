@@ -1,0 +1,25 @@
+{
+  "schema": "u1.briefops.v3.delta/2026-09-09-before-1000ET",
+  "baseline": {
+    "repo": "Unmute1-Ai/glass-box",
+    "branch": "main",
+    "verified_controls": [
+      "model provenance fails closed",
+      "component digest admission",
+      "sensitive cross-domain consent",
+      "scoped single-use credentials",
+      "external scanner verdicts advisory only",
+      "generated-design independent verification",
+      "model substitution authority invariant"
+    ]
+  },
+  "stories": [
+    {"story":"OpenAI + Samsung next-generation chip collaboration","change":"no change","reason":"Latest baseline already contains generated-design independent verification and hardware/supplier evidence-only treatment."},
+    {"story":"Meta Muse cross-app autonomous agent","change":"no change","reason":"Latest baseline already requires sensitive cross-domain consent and scoped single-use credentials for consequential effects."},
+    {"story":"Lighthouse Guild accessible-AI smartphone workshop","change":"no change","reason":"Latest baseline accessibility adapters already include visual_description without raw-sensor retention or authority inheritance."},
+    {"story":"Quantinuum $100M CHIPS trapped-ion award","change":"no change","reason":"AnnealMesh already separates ecosystem/funding maturity from verified quantum advantage and authority."},
+    {"story":"FTA ICAM pilot deadline today","change":"partner/funding artifact","targets":["OmniSign","SIGNAL","U1 BriefOps"],"reason":"Time-sensitive opportunity for disability-accessible transportation technology; no security primitive required."}
+  ],
+  "invariant": "Model capability can change without changing principal authority.",
+  "external_effects_executed": false
+}
