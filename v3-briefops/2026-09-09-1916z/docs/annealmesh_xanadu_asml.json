@@ -1,0 +1,14 @@
+{
+  "schema": "u1.annealmesh.backend.v3",
+  "backend_id": "xanadu-asml-photonic-lithography-2026-09-09",
+  "backend_class": "photonic_quantum",
+  "reported_evidence": {
+    "partners": ["Xanadu", "ASML"],
+    "focus": "advanced lithography for lower-loss photonic quantum hardware",
+    "target": "patterning control and reduced optical loss"
+  },
+  "annealmesh_status": "manufacturing_maturity_candidate",
+  "verified_quantum_advantage": false,
+  "authority_effect": "none",
+  "note": "Manufacturing-process collaboration is maturity evidence only; workload advantage requires reproducible benchmark comparison."
+}
