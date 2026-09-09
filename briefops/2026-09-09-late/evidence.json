@@ -1,0 +1,14 @@
+{
+  "generated_at": "2026-09-09T04:27:09Z",
+  "local_regression": "14/14 passed",
+  "authority_lift": 0,
+  "unauthorized_effects_enabled": 0,
+  "external_effect_integrations_enabled": false,
+  "safety_invariants": [
+    "model capability does not change principal authority",
+    "external scanner/inspector results are advisory only",
+    "sensitive cross-domain transitions require explicit consent",
+    "unverified provenance fails closed",
+    "consequential effects require exact scoped single-use credentials"
+  ]
+}
