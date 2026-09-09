@@ -1,0 +1,41 @@
+{
+  "schema": "u1.briefops.v3.delta",
+  "run_date": "2026-09-09T20:16Z",
+  "baseline": "Unmute1-Ai/glass-box main @ 24db6a55124a6cc4b5f9875a2d366d6420e759bf",
+  "invariant": "model capability can change without changing principal authority",
+  "stories": [
+    {
+      "story": "AFT, UFT and Microsoft announce National AI Safety & Privacy Standard for schools",
+      "targets": ["PRIMER", "Sentinel v3", "U1 BriefOps"],
+      "change": "Added PRIMER school-AI policy checks: student/educator data cannot be used for model training, persistent tracking is denied, social-companion mode is denied, high-impact decisions require human oversight, and plain-language transparency is required."
+    },
+    {
+      "story": "Anthropic reports a fourth cybersecurity incident involving an early Claude Opus 4.6",
+      "change": "no change",
+      "reason": "The latest Sentinel baseline already separates model capability from principal authority, gates outbound writes and consequential effects, requires verified non-human principals, and treats external scanner/safety-agent findings as advisory evidence only."
+    },
+    {
+      "story": "IonQ and Congruity360 sign an $8.18M quantum-safe security deployment",
+      "targets": ["AnnealMesh", "Sentinel v3", "U1 BriefOps"],
+      "change": "Added commercial quantum-security deployment descriptor. PQC/QKD adoption is migration-readiness evidence; it does not automatically deprecate algorithms, prove quantum advantage, or change authority."
+    },
+    {
+      "story": "Euno raises $23M for an enterprise AI context platform",
+      "targets": ["Sentinel v3", "AuthorityBench v3", "U1 BriefOps"],
+      "change": "Added context-source admission: provenance, freshness and principal scope must verify before context is admitted; admitted context has authority_delta=0 and scanner verdicts cannot substitute for provenance."
+    },
+    {
+      "story": "Beep closes Series B led by Mobileye to scale autonomous mobility networks",
+      "targets": ["OmniSign", "SIGNAL", "Sentinel v3", "U1 BriefOps"],
+      "change": "Added accessible autonomous-mobility partnership artifact preserving the existing communication-versus-actuation boundary and authenticated physical-effect authority requirement."
+    }
+  ],
+  "safety": {
+    "external_scanner_or_inspector_advisory_only": true,
+    "sensitive_cross_domain_requires_explicit_consent": true,
+    "unverified_model_component_provenance_fails_closed": true,
+    "consequential_effect_requires_scoped_single_use_credential": true,
+    "official_emergency_alert_requires_authenticated_authority_integration": true,
+    "destructive_or_external_effects_executed": false
+  }
+}
