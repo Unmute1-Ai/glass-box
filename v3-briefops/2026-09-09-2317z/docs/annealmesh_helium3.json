@@ -1,0 +1,16 @@
+{
+  "schema": "u1.annealmesh.research-descriptor.v3",
+  "id": "uchicago-helium3-optical-tweezer-2026-09-08",
+  "platform_class": "neutral_atom_fermionic_quantum",
+  "reported_evidence": {
+    "species": "metastable helium-3",
+    "architecture": "programmable optical tweezer arrays",
+    "predicted_tunneling_rate_vs_lithium6": ">=3x",
+    "prototype_built": false,
+    "next_step": "build and trap/control individual helium atoms"
+  },
+  "annealmesh_status": "theoretical_blueprint_candidate",
+  "verified_quantum_advantage": false,
+  "authority_effect": "none",
+  "note": "The result is a published architecture blueprint and projected transport advantage, not a built system or workload-level quantum advantage."
+}
