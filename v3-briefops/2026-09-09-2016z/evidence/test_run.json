@@ -1,0 +1,7 @@
+{
+  "command": "python -m pytest -q tests",
+  "result": "PASS",
+  "tests_passed": 9,
+  "authority_lift": 0,
+  "external_effects_executed": false
+}
