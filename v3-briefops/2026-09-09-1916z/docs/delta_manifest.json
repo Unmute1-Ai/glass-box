@@ -1,0 +1,41 @@
+{
+  "schema": "u1.briefops.v3.delta",
+  "run_date": "2026-09-09T19:16Z",
+  "baseline": "Unmute1-Ai/glass-box main @ a0dea92a29cf037ca145177d98fb1aee9357186e",
+  "invariant": "model capability can change without changing principal authority",
+  "stories": [
+    {
+      "story": "Cymphony raises $30M to govern AI agents and non-human identities",
+      "targets": ["Sentinel v3", "AuthorityBench v3", "U1 BriefOps"],
+      "change": "Added principal inventory admission for agents/services: identity must verify, an owning principal and authority profile are required, and scanner discovery has authority_delta=0."
+    },
+    {
+      "story": "Young Futures launches $15M Groundwork initiative",
+      "targets": ["PRIMER", "U1 BriefOps"],
+      "change": "Added PRIMER funding/opportunity artifact for the September 23 Unwritten Challenge."
+    },
+    {
+      "story": "Xanadu and ASML collaborate on photonic quantum lithography",
+      "targets": ["AnnealMesh"],
+      "change": "Added photonic-quantum manufacturing maturity descriptor; verified_quantum_advantage remains false."
+    },
+    {
+      "story": "Google commits €13B to Finland AI infrastructure",
+      "change": "no change",
+      "reason": "The latest baseline already has deployment-region admission and provenance controls; region/infrastructure evidence constrains placement but does not grant authority."
+    },
+    {
+      "story": "Inglis Opening Doors Together adds Enabled Home Showcase",
+      "targets": ["OmniSign", "SIGNAL", "U1 BriefOps"],
+      "change": "Added enabled-home pilot artifact preserving the existing simulation/proposal/actuation boundary and authenticated hardware-authority requirement."
+    }
+  ],
+  "safety": {
+    "external_scanner_or_inspector_advisory_only": true,
+    "sensitive_cross_domain_requires_explicit_consent": true,
+    "unverified_model_component_provenance_fails_closed": true,
+    "consequential_effect_requires_scoped_single_use_credential": true,
+    "official_emergency_alert_requires_authenticated_authority_integration": true,
+    "external_effects_executed": false
+  }
+}
