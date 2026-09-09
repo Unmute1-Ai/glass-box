@@ -1,0 +1,32 @@
+name: Reproduce Evidence
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  reproduce-v2-7:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install optional signature dependency
+        working-directory: v2.7-reproducible
+        run: python -m pip install -r requirements.txt
+      - name: Self-test
+        working-directory: v2.7-reproducible
+        run: python authoritybench.py --self-test
+      - name: Reproduce benchmark
+        working-directory: v2.7-reproducible
+        run: python authoritybench.py --run
+      - name: Verify signed release
+        working-directory: v2.7-reproducible
+        run: python verify_release.py
