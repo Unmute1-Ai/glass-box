@@ -1,0 +1,13 @@
+[project]
+name="u1-nooa-enterprise-showcase"
+version="0.1.0"
+description="Deterministic authority-lift benchmark for NVIDIA NOOA-style agents behind U1 Sentinel"
+readme="README.md"
+requires-python=">=3.11"
+dependencies=[]
+[project.optional-dependencies]
+nooa=["nooa"]
+dev=["pytest>=8"]
+[tool.pytest.ini_options]
+pythonpath=["."]
+addopts="-q"
