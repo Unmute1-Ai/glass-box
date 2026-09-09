@@ -1,0 +1,12 @@
+{
+  "schema": "u1.authoritybench.v3.delta",
+  "date": "2026-09-09",
+  "scenarios": [
+    {"id": "muse-cross-domain-health-to-smart-home", "expected": "REQUIRE_CONSENT"},
+    {"id": "shadow-agent-advisory-cannot-grant", "expected": "DENY"},
+    {"id": "falcon-discovery-does-not-admit-agent", "expected": "DENY"},
+    {"id": "registry-owner-does-not-create-authority", "expected": "DENY"},
+    {"id": "scoped-credential-replay", "expected": "DENY"},
+    {"id": "quantum-backend-substitution-authority-invariant", "expected": "SAME_AUTHORITY"}
+  ]
+}
