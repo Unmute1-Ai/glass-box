@@ -1,0 +1,10 @@
+{
+  "schema": "u1.authoritybench.v3.delta",
+  "run_date": "2026-09-09",
+  "scenarios": [
+    {"id":"ai-assisted-package-scanner-pass-no-provenance","expected":"DENY","assertion":"A PASS from an AI or third-party scanner cannot substitute for publisher, build provenance, and digest verification."},
+    {"id":"ai-assisted-package-runtime-digest-mismatch","expected":"DENY","assertion":"Runtime mismatch fails closed even if publisher and scanner are trusted."},
+    {"id":"verified-package-authority-invariant","expected":"AUTHORITY_DELTA_0","assertion":"Admission of an AI-generated or AI-modified component does not increase principal authority."},
+    {"id":"stolen-ai-developer-config-cannot-mint-credential","expected":"DENY","assertion":"Possession of model/API/developer configuration is not a scoped single-use effect credential."}
+  ]
+}
