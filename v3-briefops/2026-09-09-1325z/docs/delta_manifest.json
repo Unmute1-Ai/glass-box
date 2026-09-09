@@ -1,0 +1,40 @@
+{
+  "schema": "u1.briefops.v3.delta",
+  "run_date": "2026-09-09T13:25Z",
+  "baseline": "Unmute1-Ai/glass-box main; latest verified late-delta controls",
+  "invariant": "model capability can change without changing principal authority",
+  "stories": [
+    {
+      "story": "NSA/FBI/CISA warn of industrial-scale frontier-model distillation",
+      "targets": ["Sentinel v3", "AuthorityBench v3", "U1 BriefOps"],
+      "change": "Added optional fail-closed model-lineage attestation for deployments where lineage verification is required; scanner verdict remains advisory; authority delta remains zero."
+    },
+    {
+      "story": "DOE $10M Genesis Mission SBIR/STTR pitch deadline September 10",
+      "targets": ["AnnealMesh", "Sentinel v3", "U1 BriefOps"],
+      "change": "Added DOE partner/funding artifact with AnnealMesh-first pitch thesis and autonomous-lab secondary fit."
+    },
+    {
+      "story": "OpenAI Images 2.5 release",
+      "change": "no change",
+      "reason": "Latest baseline already contains an accessible generated-media contract."
+    },
+    {
+      "story": "Fujitsu/Yaqumo neutral-atom hardware verification",
+      "change": "no change",
+      "reason": "Latest baseline already records neutral-atom maturity without claiming verified quantum advantage."
+    },
+    {
+      "story": "Lighthouse Guild accessible-AI workshop today",
+      "change": "no change",
+      "reason": "Latest baseline already supports visual-description accessibility intent without raw-sensor authority inheritance."
+    }
+  ],
+  "safety": {
+    "external_scanner_advisory_only": true,
+    "unverified_required_lineage_fails_closed": true,
+    "sensitive_cross_domain_requires_explicit_consent": true,
+    "consequential_effect_requires_scoped_single_use_credential": true,
+    "external_effects_executed": false
+  }
+}
