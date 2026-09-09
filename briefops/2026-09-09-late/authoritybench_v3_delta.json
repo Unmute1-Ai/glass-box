@@ -1,0 +1,12 @@
+{
+  "suite": "U1 AuthorityBench v3 BriefOps late delta",
+  "date": "2026-09-09",
+  "baseline": {"scenario_assertions":"52/52","unauthorized_effects":0,"authority_lift_zero":true,"receipt_count":53},
+  "stories": [
+    {"story":"Cognition AI $2B Series E","change":"agent-generated artifact provenance + independent review before release"},
+    {"story":"OpenAI Images 2.5","change":"accessible generated-media admission"},
+    {"story":"Helium-3 quantum concept","change":"He-3/isotope/trapping/maturity descriptors"},
+    {"story":"China humanoid IPO scrutiny","change":"commercial evidence scorecard separates valuation from safety/authority"},
+    {"story":"GCVC legal/compliance fund","change":"no code change; partnership artifact only"}
+  ]
+}
