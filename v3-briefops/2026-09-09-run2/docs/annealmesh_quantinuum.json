@@ -1,0 +1,12 @@
+{
+  "schema": "u1.annealmesh.backend-descriptor.v3",
+  "backend_id": "quantinuum-trapped-ion-2026-09-08",
+  "backend_class": "trapped_ion_quantum",
+  "manufacturing_signal": {
+    "chips_rd_award_usd": 100000000,
+    "partners": ["GlobalFoundries", "Monarch Quantum"]
+  },
+  "verified_quantum_advantage": false,
+  "authority_effect": "none",
+  "admission_note": "Funding or fabrication maturity does not imply workload advantage or principal authority."
+}
