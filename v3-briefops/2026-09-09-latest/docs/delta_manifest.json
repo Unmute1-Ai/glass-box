@@ -1,0 +1,40 @@
+{
+  "schema": "u1.briefops.v3.delta",
+  "date": "2026-09-09",
+  "baseline": "Unmute1-Ai/glass-box main through v3-briefops/2026-09-09-1325z",
+  "invariant": "model capability can change without changing principal authority",
+  "stories": [
+    {
+      "story": "OpenAI GPT-6 Astra rollout",
+      "targets": ["Sentinel v3", "AuthorityBench v3", "U1 BriefOps"],
+      "change": "Added capability-tier admission metadata: critical/high-capability models may trigger enhanced admission review, but successful admission has authority_delta=0."
+    },
+    {
+      "story": "Google-Missouri statewide AI education partnership",
+      "targets": ["PRIMER", "U1 BriefOps"],
+      "change": "Added PRIMER state/district partnership artifact emphasizing accessibility-native multimodal tutoring, provenance and consent."
+    },
+    {
+      "story": "Lighthouse Guild accessible-AI smartphone workshop",
+      "change": "no change",
+      "reason": "Existing accessibility adapters already cover visual-description intent and prevent sensor/modality input from inheriting authority."
+    },
+    {
+      "story": "NSA/FBI/CISA frontier-model distillation advisory",
+      "change": "no change",
+      "reason": "Latest baseline already added optional fail-closed model-lineage attestation with external scanner verdicts advisory only."
+    },
+    {
+      "story": "PRX Quantum nanophotonic cold-atom loading and EIT-cooling result",
+      "targets": ["AnnealMesh"],
+      "change": "Added research-candidate descriptor. Reported hardware results are tracked, while verified_quantum_advantage remains false."
+    }
+  ],
+  "safety": {
+    "scanner_or_inspector_is_authority_grant": false,
+    "cross_domain_sensitive_transition_requires_explicit_consent": true,
+    "unverified_model_component_provenance_fails_closed": true,
+    "consequential_effect_requires_scoped_single_use_credential": true,
+    "external_effects_executed": false
+  }
+}
