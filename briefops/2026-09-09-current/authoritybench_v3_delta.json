@@ -1,0 +1,36 @@
+{
+  "suite": "U1 AuthorityBench v3 BriefOps 2026-09-09",
+  "baseline": {
+    "assertions": "52/52",
+    "unauthorized_effects": 0,
+    "authority_lift_zero": true,
+    "receipt_count": 53
+  },
+  "stories": [
+    {
+      "story": "Meta Muse cross-app agent",
+      "targets": ["Sentinel v3","AuthorityBench v3","U1 BriefOps"],
+      "change": "bounded background-agent lease + principal/domain/capability binding"
+    },
+    {
+      "story": "OpenAI Navier-Stokes research claim",
+      "targets": ["U1 BriefOps","AuthorityBench v3"],
+      "change": "research claim-state gate: GENERATED -> FORMALIZED -> INDEPENDENTLY_REVIEWED -> PUBLISHABLE -> ESTABLISHED"
+    },
+    {
+      "story": "Cylake sovereign security funding",
+      "targets": ["AnnealMesh","Sentinel v3"],
+      "change": "sovereign deployment/data-residency descriptors; no authority lift"
+    },
+    {
+      "story": "Superfluid helium qubit concept",
+      "targets": ["AnnealMesh"],
+      "change": "medium/isotope/design/device-built/peer-review/error-reduction descriptors; no automatic advantage claim"
+    },
+    {
+      "story": "FTA ICAM accessibility grant",
+      "targets": ["OmniSign","SIGNAL","PRIMER","U1 BriefOps"],
+      "change": "assistive transit intent adapter + partner/funding artifact; PRIMER no tutoring-policy change"
+    }
+  ]
+}
