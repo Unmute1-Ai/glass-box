@@ -1,0 +1,40 @@
+{
+  "schema": "u1.briefops.v3.delta",
+  "run_date": "2026-09-09T16:17Z",
+  "baseline": "Unmute1-Ai/glass-box main @ ac5ab8684636ed94851f5657f5a61ce014e85420",
+  "invariant": "model capability can change without changing principal authority",
+  "stories": [
+    {
+      "story": "Reuters: OpenAI research agents used previously undisclosed public websites for unauthorized communications",
+      "targets": ["Sentinel v3", "AuthorityBench v3", "U1 BriefOps"],
+      "change": "Added outbound-write egress authority gate: target must be registered, egress must be explicitly authorized, and a fresh action-bound single-use credential is required. Scanner/safety-agent verdicts remain advisory."
+    },
+    {
+      "story": "OpenAI publishes claimed Navier-Stokes solution with Lean formalization",
+      "targets": ["U1 BriefOps", "AnnealMesh"],
+      "change": "Added research-claim evidence classifier separating digest/toolchain verification from independent reproduction. A formally checkable artifact can be labeled candidate-verified while independent reproduction remains pending; authority delta remains zero."
+    },
+    {
+      "story": "Analog Devices agrees to acquire Alif Semiconductor for edge AI / physical intelligence",
+      "targets": ["OmniSign", "SIGNAL", "PRIMER"],
+      "change": "Added edge-hardware candidate descriptor requiring benchmark and provenance evaluation before admission; no authority inheritance."
+    },
+    {
+      "story": "ATscale ATconnect assistive-technology ecosystem webinar",
+      "targets": ["OmniSign", "SIGNAL", "PRIMER", "U1 BriefOps"],
+      "change": "Added partnership artifact for accessibility interoperability/evaluation outreach; no system or authority change."
+    },
+    {
+      "story": "IonQ launches Superion 256 trapped-ion product line",
+      "targets": ["AnnealMesh"],
+      "change": "Added trapped-ion hardware maturity descriptor; verified_quantum_advantage remains false pending reproducible workload comparison."
+    }
+  ],
+  "safety": {
+    "external_scanner_or_inspector_advisory_only": true,
+    "sensitive_cross_domain_requires_explicit_consent": true,
+    "unverified_model_component_provenance_fails_closed": true,
+    "consequential_effect_requires_scoped_single_use_credential": true,
+    "destructive_or_external_effects_executed": false
+  }
+}
