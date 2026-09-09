@@ -1,0 +1,16 @@
+{
+  "schema": "u1.annealmesh.backend.v3",
+  "backend_id": "fujitsu-diamond-spin-snv-2026-09-08",
+  "backend_class": "diamond_spin_photonic_quantum",
+  "reported_evidence": {
+    "working_prototype": true,
+    "defect_center": "tin-vacancy (SnV)",
+    "photonic_integrated_circuit": true,
+    "reported_operating_temperature_c": -271.6,
+    "available_via_hybrid_quantum_platform": true
+  },
+  "annealmesh_status": "hardware_maturity_candidate",
+  "verified_quantum_advantage": false,
+  "authority_effect": "none",
+  "note": "Prototype and platform-access milestones are maturity evidence only. Workload-level advantage requires reproducible benchmark comparison against strong classical baselines."
+}
