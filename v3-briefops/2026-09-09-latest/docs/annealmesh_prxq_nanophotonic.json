@@ -1,0 +1,17 @@
+{
+  "schema": "u1.annealmesh.research-descriptor.v3",
+  "id": "prxq-2026-09-08-nanophotonic-cold-atom-loading",
+  "platform_class": "nanophotonic_cold_atom",
+  "reported_results": {
+    "loaded_atom_increase_vs_red_detuned_pgc": "6x",
+    "loaded_cesium_atoms": 4000,
+    "optical_depth": ">140",
+    "storage_time_ms": 400,
+    "storage_time_improvement": "5x",
+    "eit_guided_power": "few hundred picowatts"
+  },
+  "annealmesh_status": "research_candidate",
+  "verified_quantum_advantage": false,
+  "authority_effect": "none",
+  "note": "Accepted experimental result is a hardware/research maturity signal, not evidence of workload-level quantum advantage."
+}
