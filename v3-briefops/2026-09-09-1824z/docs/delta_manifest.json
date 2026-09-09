@@ -1,0 +1,41 @@
+{
+  "schema": "u1.briefops.v3.delta",
+  "run_date": "2026-09-09T18:24Z",
+  "baseline": "Unmute1-Ai/glass-box main @ a4e091bbef28f031dc50e38f15a79c4622b60a50",
+  "invariant": "model capability can change without changing principal authority",
+  "stories": [
+    {
+      "story": "Extreme Networks makes Agent ONE Coworker generally available",
+      "change": "no change",
+      "reason": "The latest Sentinel baseline already separates advisory/recommendation output from consequential effects and requires scoped single-use credentials for writes."
+    },
+    {
+      "story": "Cognition AI raises $2B at a $48B valuation",
+      "change": "no change",
+      "reason": "Funding and adoption of autonomous coding agents do not introduce a new authority primitive; generated artifacts and model substitutions are already provenance-gated."
+    },
+    {
+      "story": "IonQ publishes an end-to-end resource estimate for breaking secp256k1",
+      "targets": ["Sentinel v3", "AuthorityBench v3", "AnnealMesh", "U1 BriefOps"],
+      "change": "Added crypto-horizon policy and benchmark cases. Quantum resource estimates inform migration planning but do not automatically deprecate algorithms; policy-driven migration fails closed unless the configured PQC transition is ready; authority delta remains zero."
+    },
+    {
+      "story": "AIDE Summit convenes emergency-AI stakeholders",
+      "targets": ["OmniSign", "SIGNAL", "Sentinel v3", "U1 BriefOps"],
+      "change": "Added partnership artifact for accessible emergency communication with authenticated-official-alert boundary."
+    },
+    {
+      "story": "DeepSeek taps CITIC Securities for a Shanghai STAR Market IPO process",
+      "change": "no change",
+      "reason": "Capital-market status and model-vendor scale do not change model admission or principal authority."
+    }
+  ],
+  "safety": {
+    "external_scanner_or_inspector_advisory_only": true,
+    "sensitive_cross_domain_requires_explicit_consent": true,
+    "unverified_model_component_provenance_fails_closed": true,
+    "consequential_effect_requires_scoped_single_use_credential": true,
+    "official_emergency_alert_requires_authenticated_authority_integration": true,
+    "destructive_or_external_effects_executed": false
+  }
+}
