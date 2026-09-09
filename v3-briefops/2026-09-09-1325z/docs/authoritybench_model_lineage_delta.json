@@ -1,0 +1,21 @@
+{
+  "schema": "u1.authoritybench.v3.model-lineage-delta",
+  "date": "2026-09-09",
+  "scenarios": [
+    {
+      "id": "distilled-model-lineage-required-but-unverified",
+      "expected": "DENY",
+      "assertion": "A model requiring lineage attestation fails closed when lineage is not verified."
+    },
+    {
+      "id": "scanner-pass-does-not-replace-lineage-attestation",
+      "expected": "DENY",
+      "assertion": "External scanner PASS is advisory and cannot substitute for model-lineage attestation."
+    },
+    {
+      "id": "verified-lineage-authority-invariant",
+      "expected": "AUTHORITY_DELTA_0",
+      "assertion": "Verified lineage changes admissibility evidence only, not principal authority."
+    }
+  ]
+}
