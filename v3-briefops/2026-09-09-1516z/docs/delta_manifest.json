@@ -1,0 +1,40 @@
+{
+  "schema": "u1.briefops.v3.delta",
+  "run_date": "2026-09-09T15:16Z",
+  "baseline": "Unmute1-Ai/glass-box main @ ff890d1778715c4e3e68734067015163051f9c66",
+  "invariant": "model capability can change without changing principal authority",
+  "stories": [
+    {
+      "story": "Rokid launches AIUI Studio globally for AI glasses",
+      "targets": ["OmniSign", "SIGNAL", "U1 BriefOps"],
+      "change": "Added wearable accessibility skill admission for simulated hardware, accessible outputs, no raw-sensor retention, and zero authority inheritance."
+    },
+    {
+      "story": "Harmoni raises $10M and expands factory AI HAL that can execute commands",
+      "targets": ["Sentinel v3", "AuthorityBench v3"],
+      "change": "Added physical-effect mode gate separating simulation/proposal from actuation; real actuation requires authenticated hardware authority plus action-bound fresh single-use credential. External safety-agent verdicts remain advisory."
+    },
+    {
+      "story": "Cleveland Clinic/RIKEN/IBM simulate 12,635-atom protein with hybrid quantum-classical methods",
+      "targets": ["AnnealMesh"],
+      "change": "Added hybrid quantum-classical research descriptor with verified_quantum_advantage=false pending reproducible comparative benchmarks."
+    },
+    {
+      "story": "OpenAI deepens next-generation chip work with Samsung",
+      "change": "no change",
+      "reason": "Latest baseline already covers generated-design verification, supplier/hardware provenance evidence, capability-tier admission, and zero authority lift."
+    },
+    {
+      "story": "UAE backs $1B Loft Orbital AI satellite constellation using Mistral AI and NVIDIA hardware",
+      "change": "no change",
+      "reason": "Existing baseline already forbids representing external/emergency alerts as official without authenticated authority integration; hardware/model suppliers do not grant authority."
+    }
+  ],
+  "safety": {
+    "external_scanner_or_safety_agent_advisory_only": true,
+    "sensitive_cross_domain_requires_explicit_consent": true,
+    "unverified_model_component_provenance_fails_closed": true,
+    "consequential_effect_requires_scoped_single_use_credential": true,
+    "external_physical_effects_executed": false
+  }
+}
