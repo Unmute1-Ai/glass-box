@@ -1,0 +1,14 @@
+{
+  "schema": "u1.briefops.v3.delta",
+  "run_date": "2026-09-09",
+  "baseline": "Unmute1-Ai/glass-box main",
+  "invariant": "model capability can change without changing principal authority",
+  "stories": [
+    {"story":"Google GTIG: adversaries move from prompting toward agentic AI and target software supply chains / AI developer configurations","targets":["Sentinel v3","AuthorityBench v3","U1 BriefOps"],"change":"Implemented supply-chain component admission requiring verified publisher, verified build provenance, and matching digest; added AuthorityBench cases for advisory scanners, runtime mismatch, AI-modified packages, and stolen AI-developer configurations."},
+    {"story":"Fujitsu and Yaqumo begin neutral-atom architecture/toolchain verification on actual hardware","targets":["AnnealMesh"],"change":"Added neutral-atom backend descriptor with actual-hardware verification maturity signal and verified_quantum_advantage=false."},
+    {"story":"Meta launches Muse cross-app autonomous agent","change":"no change","reason":"Current baseline already covers sensitive cross-domain consent, scoped single-use credentials, and advisory-only external safety agents."},
+    {"story":"Lighthouse Guild accessible-AI workshop in Manhattan","change":"no change","reason":"Current baseline already normalizes visual-description intent without raw sensor retention or authority inheritance."},
+    {"story":"FTA ICAM pilot closes September 9","change":"no change","reason":"Current baseline already contains the ICAM partner/funding artifact."}
+  ],
+  "external_effects_executed": false
+}
