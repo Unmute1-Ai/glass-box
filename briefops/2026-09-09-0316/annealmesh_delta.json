@@ -1,0 +1,25 @@
+{
+  "schema": "u1.annealmesh.backend.v3.1",
+  "backends": [
+    {
+      "backend_id": "quantinuum-trapped-ion-reference",
+      "class": "quantum",
+      "fabrication_maturity": "commercial-research",
+      "funding_signal": {
+        "type": "federal_award",
+        "amount_usd": 100000000,
+        "date": "2026-09-08"
+      },
+      "verified_advantage": false,
+      "authority_effect": "none",
+      "notes": "Funding/manufacturing progress is ecosystem evidence only; no computational advantage claim."
+    },
+    {
+      "backend_id": "classical-baseline",
+      "class": "classical",
+      "fabrication_maturity": "production",
+      "verified_advantage": true,
+      "authority_effect": "none"
+    }
+  ]
+}
