@@ -1,0 +1,24 @@
+{
+  "schema": "u1.briefops.v3.delta",
+  "run_date": "2026-09-09T21:21Z",
+  "baseline": "Unmute1-Ai/glass-box main @ 461fc79f66671d03c23160bc52b0a26441c85419",
+  "invariant": "model capability can change without changing principal authority",
+  "stories": [
+    {"story":"OpenAI says its models helped tape out the Jalapeno chip in nine months","change":"no change","reason":"Existing generated-design verification, component provenance, and hardware benchmark-before-admission controls already cover AI-assisted chip design."},
+    {"story":"Anthropic reports a fourth Claude cybersecurity incident","change":"no change","reason":"Existing egress, network, non-human-principal, and consequential-effect gates already cover the failure mode; external investigations remain advisory."},
+    {"story":"WHO/ITU/WIPO GI-AI4H opens practical case-study and privacy-preserving benchmark participation","targets":["Sentinel v3","OmniSign","SIGNAL","AnnealMesh","U1 BriefOps"],"change":"Added partnership/opportunity artifact. Benchmark results remain advisory and are explicitly not treated as regulatory approval or authority."},
+    {"story":"Quantinuum finalizes $100M CHIPS R&D award","change":"no change","reason":"AnnealMesh already records trapped-ion manufacturing maturity separately from verified workload-level quantum advantage."},
+    {"story":"UNDP and China launch $2.5M Moldova assistive-technology initiative","targets":["OmniSign","SIGNAL","U1 BriefOps"],"change":"Added partnership artifact for accessibility interoperability and local-first communication layers; no health-system or physical authority."}
+  ],
+  "safety": {
+    "external_scanner_or_inspector_advisory_only": true,
+    "sensitive_cross_domain_requires_explicit_consent": true,
+    "unverified_model_component_provenance_fails_closed": true,
+    "consequential_effect_requires_scoped_single_use_credential": true,
+    "health_system_writes_executed": false,
+    "physical_actuation_executed": false,
+    "financial_transactions_executed": false,
+    "official_emergency_alerts_issued": false,
+    "external_effects_executed": false
+  }
+}
