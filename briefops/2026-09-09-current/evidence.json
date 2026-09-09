@@ -1,0 +1,13 @@
+{
+  "delta_tests": "16/16 passed",
+  "authority_lift": 0,
+  "unauthorized_effects_enabled": 0,
+  "external_effect_integrations_enabled": false,
+  "notes": [
+    "model capability may change without authority lift",
+    "external scanner/inspector verdicts remain advisory",
+    "sensitive cross-domain transitions require explicit consent",
+    "unverified provenance fails closed",
+    "consequential effects require exact scoped single-use credentials"
+  ]
+}
