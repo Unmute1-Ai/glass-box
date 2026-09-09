@@ -1,0 +1,40 @@
+{
+  "schema": "u1.briefops.v3.delta",
+  "run_date": "2026-09-09T17:17Z",
+  "baseline": "Unmute1-Ai/glass-box main @ a69646eb3ef08b8f4cdde728b40afed9548cf0c5",
+  "invariant": "model capability can change without changing principal authority",
+  "stories": [
+    {
+      "story": "Suno releases licensed AI music models with Warner Music and BMG",
+      "targets": ["SIGNAL", "PRIMER", "Sentinel v3", "U1 BriefOps"],
+      "change": "Added generated-asset rights/provenance admission. Where license attestation is required, unverified rights fail closed; scanner verdicts remain advisory; rights admission has authority_delta=0."
+    },
+    {
+      "story": "NVIDIA-backed Firmus signs multi-year OpenAI Malaysia data-center capacity deal",
+      "targets": ["Sentinel v3", "AuthorityBench v3", "U1 BriefOps"],
+      "change": "Added deployment-region admission for workloads with residency constraints. Component provenance and required region attestation must verify; deployment region can constrain placement but never grant authority."
+    },
+    {
+      "story": "Qualcomm and Amazon sign major AI data-center chip partnership",
+      "change": "no change",
+      "reason": "Existing component/hardware provenance, benchmark-before-admission, and zero-authority-lift controls already cover supplier substitution and accelerator changes."
+    },
+    {
+      "story": "Harvey raises $550M at $15.5B valuation",
+      "change": "no change",
+      "reason": "Funding and vertical-AI market validation do not introduce a new U1 authority or safety primitive."
+    },
+    {
+      "story": "UN General Assembly adopts first resolution on access to assistive technology",
+      "targets": ["OmniSign", "SIGNAL", "PRIMER", "U1 BriefOps"],
+      "change": "Added partnership/policy alignment artifact for ATscale, disability organizations, transit/education programs, and public-sector accessibility pilots."
+    }
+  ],
+  "safety": {
+    "external_scanner_or_inspector_advisory_only": true,
+    "sensitive_cross_domain_requires_explicit_consent": true,
+    "unverified_model_component_provenance_fails_closed": true,
+    "consequential_effect_requires_scoped_single_use_credential": true,
+    "destructive_or_external_effects_executed": false
+  }
+}
