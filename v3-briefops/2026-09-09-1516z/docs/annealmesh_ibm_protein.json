@@ -1,0 +1,14 @@
+{
+  "schema": "u1.annealmesh.research-descriptor.v3",
+  "id": "ibm-cleveland-riken-12635-atom-protein-2026-09-09",
+  "platform_class": "hybrid_quantum_classical",
+  "reported_result": {
+    "biological_system_atoms": 12635,
+    "method": "quantum-centric supercomputing",
+    "recognition": "2026 ACM Gordon Bell Prize finalist"
+  },
+  "annealmesh_status": "research_candidate",
+  "verified_quantum_advantage": false,
+  "authority_effect": "none",
+  "note": "Scale and scientific relevance are maturity signals. Workload-level advantage requires reproducible benchmark comparison against strong classical baselines."
+}
