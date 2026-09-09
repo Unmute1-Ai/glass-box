@@ -1,0 +1,18 @@
+{
+  "schema": "u1.edge-hardware-candidate.v3",
+  "id": "analog-devices-alif-edgeai-2026-09-09",
+  "vendor_event": "Analog Devices announced agreement to acquire Alif Semiconductor",
+  "reported_capabilities": [
+    "AI-native microcontrollers and fusion processors",
+    "integrated neural processing",
+    "real-time sensor fusion",
+    "low-latency on-device inference",
+    "power-efficient edge processing"
+  ],
+  "u1_targets": ["OmniSign", "SIGNAL", "PRIMER"],
+  "status": "candidate_only",
+  "benchmark_required": true,
+  "component_provenance_required": true,
+  "authority_effect": "none",
+  "note": "Commercial claims are inputs to evaluation, not admission or authority grants."
+}
