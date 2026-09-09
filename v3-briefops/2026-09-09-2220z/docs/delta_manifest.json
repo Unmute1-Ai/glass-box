@@ -1,0 +1,44 @@
+{
+  "schema": "u1.briefops.v3.delta",
+  "run_date": "2026-09-09T22:20Z",
+  "baseline": "Unmute1-Ai/glass-box main @ 8c25a27124bc2561b74ab9aa7b01f68e4cef8c55",
+  "invariant": "model capability can change without changing principal authority",
+  "stories": [
+    {
+      "story": "OpenAI appoints Paul Christiano to the Foundation Board and Safety and Security Committee",
+      "change": "no change",
+      "reason": "Board-level safety governance is an important institutional signal, but it does not introduce a new runtime authority primitive beyond the existing Sentinel baseline."
+    },
+    {
+      "story": "Accenture and Google Cloud launch Gemini Enterprise group with 1,000 forward-deployed engineers",
+      "targets": ["Sentinel v3", "OmniSign", "SIGNAL", "PRIMER", "U1 BriefOps"],
+      "change": "Added enterprise partner/reference-architecture artifact preserving provider-neutral authority and accessibility-modality isolation."
+    },
+    {
+      "story": "Falcon launches MerlinFX agents that can operate inside real-time bank transaction infrastructure",
+      "targets": ["Sentinel v3", "AuthorityBench v3", "U1 BriefOps"],
+      "change": "Added explicit financial-effect gate separating simulation/proposal from transaction execution. Real transactions require verified model provenance, authenticated institution authority, and a fresh action-bound single-use credential. Scanner/safety verdicts remain advisory."
+    },
+    {
+      "story": "Fujitsu demonstrates diamond-spin quantum-computer prototype using SnV centers and photonic integration",
+      "targets": ["AnnealMesh"],
+      "change": "Added diamond-spin photonic backend maturity descriptor with verified_quantum_advantage=false."
+    },
+    {
+      "story": "Abilities Expo Phoenix opens September 11",
+      "targets": ["OmniSign", "SIGNAL", "U1 BriefOps"],
+      "change": "Added accessibility user-validation and partnership artifact; no modality or sensor input inherits authority."
+    }
+  ],
+  "safety": {
+    "external_scanner_or_inspector_advisory_only": true,
+    "sensitive_cross_domain_requires_explicit_consent": true,
+    "unverified_model_component_provenance_fails_closed": true,
+    "consequential_effect_requires_scoped_single_use_credential": true,
+    "financial_transactions_executed": false,
+    "health_system_writes_executed": false,
+    "physical_actuation_executed": false,
+    "official_emergency_alerts_issued": false,
+    "external_effects_executed": false
+  }
+}
