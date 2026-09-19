@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; img-src 'self' data:; font-src 'none'; script-src 'none'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="U1 Security assesses agent permissions, approval flows, and tool execution. Fixed-scope assessments and SENTINEL integration engineering from Unmute1AI.">
+  <meta name="theme-color" content="#111115">
+  <title>U1 Security — Control what your agents can do.</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23111115'/%3E%3Cpath d='M9 8v11a7 7 0 0014 0V8' fill='none' stroke='white' stroke-width='4'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="header wrap">
+    <a class="brand" href="#" aria-label="U1 Security home"><span class="mark">u1</span><span>SECURITY</span></a>
+    <nav aria-label="Primary"><a href="#approach">Approach</a><a href="#evidence">Evidence</a><a href="#engagements">Engagements</a></nav>
+    <a class="nav-contact" href="mailto:Matthew@u1ai.app?subject=U1%20Security%20inquiry">Talk to us <span aria-hidden="true">↗</span></a>
+  </header>
+  <main id="main">
+    <section class="hero wrap">
+      <div class="eyebrow"><span class="small-line" aria-hidden="true"></span> AGENT SECURITY / UNMUTE1AI</div>
+      <div class="hero-grid">
+        <div><h1>Give agents capability.<br><span>Keep control.</span></h1><p class="lead">An agent’s answer is not permission to act. We assess the approvals, policies, and execution boundaries that stand between your AI and your systems.</p><div class="actions"><a class="button" href="#engagements">Scope an assessment <span aria-hidden="true">↗</span></a><a class="text-link" href="#evidence">Review the engineering</a></div></div>
+        <aside class="architecture" aria-label="Illustrative target architecture, not a live system">
+          <div class="panel-heading"><span>SENTINEL</span><span class="muted">Target architecture</span></div>
+          <div class="boundary-row"><span class="step-number">01</span><div><strong>Agent proposal</strong><span>Requested action + target</span></div><span class="label">UNTRUSTED</span></div>
+          <div class="boundary-row authority"><span class="step-number">02</span><div><strong>Authority gate</strong><span>Identity · policy · bound approval</span></div><span class="label">REQUIRED</span></div>
+          <div class="boundary-row"><span class="step-number">03</span><div><strong>Controlled execution</strong><span>Exact action, within approved scope</span></div></div>
+          <div class="boundary-row"><span class="step-number">04</span><div><strong>Reviewable evidence</strong><span>Decision + execution outcome</span></div></div>
+          <p class="panel-footer">No permission inferred from model confidence.</p>
+        </aside>
+      </div>
+      <div class="hero-foot"><span>AUTHORITY BY DESIGN</span><span>Scoped engineering. Inspectable evidence. Explicit limits.</span></div>
+    </section>
+    <section id="approach" class="section wrap">
+      <div class="section-head"><div><div class="eyebrow">01 / WHAT WE EXAMINE</div><h2>The boundary matters<br>more than the prompt.</h2></div><p>A convincing model response should never be enough to create a permission, replace an approved action, or reuse an expired approval.</p></div>
+      <div class="features"><article><span class="index">A /</span><h3>Who can authorize?</h3><p>Trace identity and ownership through the approval path. Check where caller-controlled fields become trusted decisions.</p></article><article><span class="index">B /</span><h3>What was approved?</h3><p>Compare the reviewed action with the executed action. Examine target binding, scope changes, and mutation between review and execution.</p></article><article><span class="index">C /</span><h3>Can it happen twice?</h3><p>Challenge expiry and replay behavior, including concurrent requests, service failures, and persistence across restarts.</p></article></div>
+    </section>
+    <section id="evidence" class="evidence-section"><div class="wrap section">
+      <div class="section-head"><div><div class="eyebrow">02 / ENGINEERING EVIDENCE</div><h2>Read the source.<br>Question the claims.</h2></div><p>Glass Box publishes bounded test evidence. SENTINEL is reference engineering—not a finished managed security product.</p></div>
+      <div class="evidence-grid"><article class="evidence-item"><span class="eyebrow">FROZEN BENCHMARK / V2.7</span><div class="metric">4<span> / 4</span></div><h3>Benchmark self-tests passed</h3><p>18 scenarios × 2 adapters. Zero unauthorized effects observed within the supplied synthetic benchmark. Release hashes and detached signature verified.</p><a href="https://github.com/Unmute1-Ai/glass-box/tree/4ec50b2a119b6ac54bc8017f532d092c014aaed3/v2.7-reproducible">Reproduce the benchmark <span aria-hidden="true">↗</span></a></article><article class="evidence-item"><span class="eyebrow">HARDENING TRACK / V2.10</span><div class="metric">19<span> / 19</span></div><h3>Local regression tests passed</h3><p>Includes expiry during review, unissued approvals, persistent replay rejection, and evaluator timeout cases. Proposed changes remain subject to review.</p><a href="https://github.com/Unmute1-Ai/glass-box/tree/fix/sentinel-approval-hardening/v2.10-sentinel-hardening">Inspect the hardening changes <span aria-hidden="true">↗</span></a></article></div>
+      <p class="evidence-note">Checked September 17, 2026. Internal tests, not independent certification. Production integrations still require authenticated approval issuance, executor-bound controls, and durable audit/crash recovery.</p>
+    </div></section>
+    <section id="engagements" class="section wrap">
+      <div class="section-head"><div><div class="eyebrow">03 / WORK WITH US</div><h2>One workflow.<br>A concrete next step.</h2></div><p>Start with a defined question and leave with reproducible findings. We agree the scope and acceptance criteria before work begins.</p></div>
+      <div class="pricing"><article class="offer"><div class="offer-top"><span class="eyebrow">ASSESSMENT</span><span class="pill">Fixed scope</span></div><h3>Agent Authority Review</h3><div class="price">$750 <span>USD</span></div><p>One agent workflow, up to three tool actions, and up to six agreed abuse cases.</p><ul><li>Permission and approval-flow review</li><li>Reproducible findings with severity rationale</li><li>Prioritized remediation plan</li><li>30-minute technical handover</li></ul><a class="button" href="mailto:Matthew@u1ai.app?subject=U1%20Security%20assessment&amp;body=Company%3A%0AAgent%20workflow%3A%0ATools%20and%20stack%3A%0ATarget%20start%20date%3A">Request assessment scope <span aria-hidden="true">↗</span></a><p class="fine">$375 on booking, $375 on delivery. Target: five business days after scope, access, and start date are confirmed.</p></article><article class="offer secondary"><div class="offer-top"><span class="eyebrow">INTEGRATION ENGINEERING</span><span class="pill">Scoped pilot</span></div><h3>SENTINEL Integration</h3><div class="price"><span>From</span> $2,500 <span>USD</span></div><p>Implement agreed controls around one workflow in a controlled staging environment.</p><ul><li>Policy and execution-boundary design</li><li>Bound approvals and replay controls</li><li>Implementation-specific acceptance tests</li><li>Handover and readiness findings</li></ul><a class="button outline" href="mailto:Matthew@u1ai.app?subject=SENTINEL%20integration%20pilot&amp;body=Company%3A%0AWorkflow%3A%0ACurrent%20stack%3A%0ATarget%20timeline%3A">Discuss an integration <span aria-hidden="true">↗</span></a><p class="fine">Final price and timeline agreed in writing. Production rollout, monitoring, and incident response are not included.</p></article></div>
+    </section>
+    <section class="section wrap faq"><div><div class="eyebrow">04 / DETAILS</div><h2>Clear scope.<br>No hidden promises.</h2></div><div><details><summary>Is this security software I can deploy today?</summary><p>The repository contains reference code and test evidence. It is not a packaged production runtime or managed security service. The paid offers cover assessment and scoped integration engineering.</p></details><details><summary>What happens when I request an assessment?</summary><p>The link opens an email to Matthew@u1ai.app. We confirm your workflow, scope, access requirements, availability, and deliverables in writing, then arrange an invoice. This site does not process payments or reserve appointments.</p></details><details><summary>What data do you need?</summary><p>Start with your workflow and stack. Do not email credentials, customer data, or secrets. We agree controlled access and data-handling arrangements before reviewing a code snapshot or staging environment.</p></details><details><summary>Does this page run a security agent?</summary><p>No. This is a public information page with no execution endpoint, file uploads, customer database, or payment collection. The security reference code is separate from this website.</p></details></div></section>
+    <section class="contact wrap"><div><div class="eyebrow">START WITH YOUR HIGHEST-CONSEQUENCE ACTION</div><h2>What should your agent<br>never do without approval?</h2></div><a class="button" href="mailto:Matthew@u1ai.app?subject=Agent%20authority%20inquiry">Let’s scope it <span aria-hidden="true">↗</span></a></section>
+  </main>
+  <footer class="wrap"><a class="brand" href="#"><span class="mark">u1</span><span>UNMUTE1AI</span></a><span>Accessibility first. Authority by design.</span><a href="mailto:Matthew@u1ai.app">Matthew@u1ai.app</a></footer>
+</body>
+</html>
