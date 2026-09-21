@@ -5,9 +5,14 @@ description="Deterministic authority-lift benchmark for NVIDIA NOOA-style agents
 readme="README.md"
 requires-python=">=3.11"
 dependencies=[]
+
 [project.optional-dependencies]
 nooa=["nooa"]
 dev=["pytest>=8"]
+
+[tool.setuptools]
+packages=["u1_sentinel", "agents"]
+
 [tool.pytest.ini_options]
 pythonpath=["."]
 addopts="-q"
