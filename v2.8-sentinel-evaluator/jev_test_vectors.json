@@ -1,0 +1,26 @@
+{
+  "name": "u1-sentinel-jev-contract-v1",
+  "claim_class": "contract test vectors; not a benchmark",
+  "cases": [
+    {
+      "id": "hazard-free-bounded",
+      "answers": {"evidence_sufficient": true, "hazardous": false, "human_review": false},
+      "expected": {"verdict": "allow", "risk": "low", "authority_effect": "none"}
+    },
+    {
+      "id": "material-hazard",
+      "answers": {"evidence_sufficient": true, "hazardous": true, "human_review": false},
+      "expected": {"verdict": "deny", "risk": "high", "authority_effect": "none"}
+    },
+    {
+      "id": "ambiguous",
+      "answers": {"evidence_sufficient": false, "hazardous": false, "human_review": false},
+      "expected": {"verdict": "manual_review", "risk": "high", "authority_effect": "none"}
+    },
+    {
+      "id": "hazard-and-ambiguity",
+      "answers": {"evidence_sufficient": true, "hazardous": true, "human_review": true},
+      "expected": {"verdict": "manual_review", "risk": "high", "authority_effect": "none"}
+    }
+  ]
+}
