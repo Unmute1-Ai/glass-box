@@ -72,11 +72,19 @@ Fine-tune:
 python -m u1_sentinel_model.train   --base-model Qwen/Qwen2.5-7B-Instruct   --train-file data/train.jsonl   --output-dir artifacts/u1-sentinel-evaluator-v0.1   --load-in-4bit
 ```
 
-Evaluate:
+Evaluate and save the metrics output:
 
 ```bash
-python -m u1_sentinel_model.eval   --model artifacts/u1-sentinel-evaluator-v0.1   --eval-file data/eval.jsonl
+python -m u1_sentinel_model.eval --model artifacts/u1-sentinel-evaluator-v0.1 --eval-file data/eval.jsonl > artifacts/eval-metrics.json
 ```
+
+Run the fail-closed promotion gate against that metrics file:
+
+```bash
+python -m u1_sentinel_model.promotion_gate --metrics artifacts/eval-metrics.json --report artifacts/promotion-report.json
+```
+
+The gate exits non-zero unless the evaluation includes deny and critical-risk cases and records zero false allows, zero critical false allows, and zero malformed outputs. This is a mechanical threshold check for the supplied metrics, not a certification; keep the evaluation corpus frozen, inspect its provenance, and retain the full run artifacts. A model passing this gate remains advisory and never gains execution authority.
 
 ## Data design
 
