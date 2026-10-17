@@ -1,0 +1,37 @@
+name: Agent Assurance Reference Checks
+
+on:
+  pull_request:
+    paths:
+      - "v3-agent-assurance/**"
+      - ".github/workflows/agent-assurance.yml"
+  push:
+    branches: ["main"]
+    paths:
+      - "v3-agent-assurance/**"
+      - ".github/workflows/agent-assurance.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run unit tests
+        working-directory: v3-agent-assurance
+        run: python -m unittest -v
+      - name: Run synthetic scenarios
+        working-directory: v3-agent-assurance
+        run: python run_scenarios.py --output report.json
+      - name: Upload scenario report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agent-assurance-report
+          path: v3-agent-assurance/report.json
+          if-no-files-found: ignore

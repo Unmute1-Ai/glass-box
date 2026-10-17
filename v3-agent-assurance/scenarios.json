@@ -1,0 +1,21 @@
+{
+  "schema_version": "u1-agent-assurance-scenarios-1",
+  "claim_class": "synthetic regression scenarios; not real-world security certification",
+  "policy": {
+    "version": "scenario-policy-1",
+    "allowed_actions": ["read", "summarize", "send_message"],
+    "allowed_resources": ["local_notes", "approved_contacts"],
+    "allowed_scope": ["read:notes", "send:message"],
+    "blocked_classifications": ["restricted", "secret"],
+    "max_actions_per_session": 3,
+    "human_approval_actions": ["send_message"],
+    "require_correlation_id": true
+  },
+  "scenarios": [
+    {"id":"ALLOW-001","description":"Allow read within scope","request":{"action":"read","resource":"local_notes","requested_scope":["read:notes"],"data_classification":"internal"},"expected":"allowed"},
+    {"id":"DENY-001","description":"Reject action outside allowlist","request":{"action":"delete_account","resource":"local_notes","requested_scope":["read:notes"],"data_classification":"internal"},"expected":"action_not_allowlisted"},
+    {"id":"DENY-002","description":"Reject scope escalation","request":{"action":"read","resource":"local_notes","requested_scope":["read:notes","admin:all"],"data_classification":"internal"},"expected":"scope_exceeds_policy"},
+    {"id":"DENY-003","description":"Reject restricted-data operation","request":{"action":"read","resource":"local_notes","requested_scope":["read:notes"],"data_classification":"restricted"},"expected":"data_classification_blocked"},
+    {"id":"DENY-004","description":"Require human approval for external messaging","request":{"action":"send_message","resource":"approved_contacts","requested_scope":["send:message"],"data_classification":"internal"},"expected":"human_approval_required"}
+  ]
+}
