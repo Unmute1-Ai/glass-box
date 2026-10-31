@@ -32,4 +32,5 @@ Call the policy gate immediately before an effect. Route actions through a fixed
 - test_supply_chain_security.py: synthetic regression tests for cross-tenant resource attempts, privilege escalation, credential mutation, monitor-disable requests, and audit evidence.
 - DELEGATED_IDENTITY_TEST_PLAN.md: threat cases, expected outcomes, and production-validation gaps for delegated identity and supply-chain abuse.
 - scenarios.json and run_scenarios.py: reproducible synthetic scenario runner and machine-readable report.
+- u1siq/: hardened TypeScript reference for the U1SiQ five-gate check and tool-side enforcer (signed, envelope-bound, replay-protected, chain-verified receipts; authenticated consent; fail-closed acoustic gate). See u1siq/README.md for the same-process trust limit.
 - INDEPENDENT_EVALUATION_PROTOCOL.md: reviewer model, required test families, evidence package, and pass/fail invariants.
