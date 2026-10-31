@@ -1,0 +1,17 @@
+{
+  "name": "u1siq-gate-reference",
+  "private": true,
+  "type": "module",
+  "description": "Hardened reference implementation of the U1SiQ gate and enforcer. No runtime dependencies.",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "test": "node --test",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.1",
+    "typescript": "5.9.3"
+  }
+}
