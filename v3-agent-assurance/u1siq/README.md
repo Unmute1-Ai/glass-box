@@ -3,7 +3,7 @@
 A TypeScript reference for the U1SiQ five-gate authority check and its tool-side enforcer. It is a rewrite that closes the gaps found in the implementation review. It has no runtime dependencies; it uses only WebCrypto (Ed25519), `node:fs` and `node:test`.
 
     cd v3-agent-assurance/u1siq
-    node --test            # Node 22.18+; 39 regression tests
+    node --test            # Node 22.18+; 51 regression tests
     npm run typecheck      # needs @types/node and TypeScript 5.8+
 
 ## What changed versus the reviewed code
@@ -15,7 +15,7 @@ A TypeScript reference for the U1SiQ five-gate authority check and its tool-side
 | Receipt not bound to envelope | The enforcer recomputes the hash of the envelope being executed and requires `receipt.envelopeHash` to match. | `refuses a valid ALLOW receipt for different parameters` |
 | No replay protection | A consumed-receipt store is checked and written before the effect, with serialized execution. | `same receipt twice`, `concurrent executes ... exactly once` |
 | Chain not checked across receipts | The enforcer verifies sequence, `previousReceiptHash` and signature for every new ledger entry, and re-hashes the newest verified entry on each call. Any break halts it permanently. `verifyFullChain()` catches edits deeper in the ledger. | `deleting`, `reordering`, `rewriting`, `edits deep in the verified prefix` |
-| Acoustic check fails open (`?? 0`) | Missing, malformed, out-of-range, degraded, stale or future-dated telemetry denies. | `acoustic gate fails closed: *` (7 cases) |
+| Acoustic check fails open (`?? 0`) | Gate 4 is now a duress-signal gate that accepts any modality (voice, signing, face, physiological). Malformed, out-of-range or tense signals deny. A missing, degraded or stale signal is never read as calm: by default it steps up to an approval signed after a strong presence check (biometric or hardware), or it denies if policy says `deny`. Deaf and non-speaking users are not locked out (KV62's rule: never voice-only). | `no usable duress signal *`, `Deaf user: calm signing signal`, `duress gate denies *` |
 | Consent tied only to `proposalId` | Consent signs `{proposalId, envelopeHash, approverId, issuedAt, expiresAt, nonce}`. A nonce is burned only on ALLOW. | `does not cover changed parameters`, `cannot be replayed`, `expired consent` |
 | Evidence only checked as non-empty | Each hash must exist in an `EvidenceStore` that computes the hash from content itself. One unknown hash denies. | `evidence must be registered` |
 | Risk tier self-declared | Policy sets the floor per action. Unknown actions are denied, including prototype names like `toString`. | `under-declared tier is raised`, `unknown action` |
@@ -27,7 +27,9 @@ A TypeScript reference for the U1SiQ five-gate authority check and its tool-side
 - **The gate and the agent still share a process.** The signing key is non-extractable and kept in a `#private` field, and the gate's verdict no longer depends on anything the agent asserts. But code running in the same process can still monkeypatch `crypto.subtle`, patch the `U1SiQEnforcer` prototype, or call the effect function without going through the enforcer. Approvals are only as trustworthy as the process isolation around the gate, and that isolation is not built yet. The production requirement: the gate (and its key, ideally KMS/HSM) runs in a separate process or service; the enforcer runs where the tool runs; the agent can only send envelopes over an authenticated channel.
 - **`EvidenceStore.register()` and approver registration are trusted paths.** Keep them off the agent's tool surface.
 - **Approver keys are generated in-process here, for the tests.** In production they live on the human's device (WebAuthn / passkey or hardware token), and the approval UI must show the exact envelope being signed.
-- **The acoustic score itself is not authenticated.** The gate fails closed on missing or bad telemetry but cannot tell a real calm sample from a fabricated one. Signed sensor attestations are the next step.
+- **Duress scores are not authenticated.** The gate never reads missing signal as calm, but it cannot tell a real calm sample from a fabricated one. Signed sensor attestations are the next step.
+- **The step-up trades coverage for access.** An agent can strip the signal to force the strong-presence path. That still needs a human biometric approval, but a coerced user can give one, which is exactly the case the signal exists for. For the highest tiers, pair it with KV62's Treasury rules (time-lock, trusted contact), or set `onNoUsableSignal: 'deny'` per product.
+- **`presence` is whatever the approver's device signs.** It is only as strong as that device's presence check.
 - **The file stores are single-writer.** Multi-process or multi-region use needs a transactional shared store. `entries()` copies the ledger on every call, which is fine for a reference and too slow at scale; use an indexed store with checkpointed heads.
 - **An administrator who rewrites the whole ledger and holds the signing key can forge history.** Export signed checkpoints to a separate trust domain, as in the Watchtower README.
 - **Execution is at-most-once.** A crash during an effect needs a fresh evaluation, not a retry with the same receipt.

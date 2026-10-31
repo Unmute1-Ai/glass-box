@@ -17,11 +17,14 @@ import { verifyConsentSignature, type RegisteredApprover } from './consent.ts';
 import { MemoryConsumedStore, type ConsumedStore, type ReceiptLedger } from './ledger.ts';
 import {
   GENESIS_HASH,
+  DURESS_MODALITIES,
   TIER_RANK,
   isRiskTier,
   maxTier,
   type ActionEnvelope,
   type ConsentToken,
+  type DuressModality,
+  type DuressSignal,
   type EpistemicStatus,
   type GatePolicy,
   type ReceiptBody,
@@ -152,16 +155,31 @@ export class U1SiQGate {
     const epistemicStatus: EpistemicStatus =
       verifiedCount > 0 && unverified.length === 0 ? 'VERIFIED_FACT' : 'UNVERIFIED';
 
-    // Gate 4: acoustic context. Missing, malformed, degraded, or stale signal denies.
-    if (atLeast(this.policy.acousticRequiredFrom)) reasons.push(...this.#acousticErrors(envelope, now));
+    // Gate 4: duress signal from any modality. Malformed input or a tense
+    // reading denies. No usable signal steps up to a strong-presence approval
+    // (or denies, per policy) instead of being read as calm.
+    let duressPath: ReceiptBody['duressPath'];
+    let needStrongPresence = false;
+    if (atLeast(this.policy.duressRequiredFrom)) {
+      const d = this.#duressCheck(envelope, now);
+      reasons.push(...d.errors);
+      if (d.usable) duressPath = 'signal';
+      else if (this.policy.duress.onNoUsableSignal === 'deny') reasons.push('duress_signal_unavailable');
+      else {
+        needStrongPresence = true;
+        duressPath = 'strong_presence';
+      }
+    }
 
     // Gate 5: authenticated human consent bound to this exact envelope.
     let consentApproverId: string | undefined;
     let consentNonce: string | undefined;
-    if (atLeast(this.policy.consentRequiredFrom)) {
+    if (atLeast(this.policy.consentRequiredFrom) || needStrongPresence) {
       const err = await this.#consentError(consent, envelope, envelopeHash, tier, now);
       if (err) reasons.push(err);
-      else {
+      else if (needStrongPresence && consent!.presence !== 'strong') {
+        reasons.push('duress_signal_unavailable_strong_presence_required');
+      } else {
         consentApproverId = consent!.approverId;
         consentNonce = consent!.nonce;
       }
@@ -187,6 +205,7 @@ export class U1SiQGate {
       issuedAt: now,
       expiresAt: now + this.policy.receiptTtlMs,
       ...(consentApproverId ? { consentApproverId } : {}),
+      ...(duressPath ? { duressPath } : {}),
     };
     const receiptHash = await hashCanonical(body);
     const signature = b64url(await crypto.subtle.sign('Ed25519', this.#privateKey, utf8(receiptHash)));
@@ -196,20 +215,42 @@ export class U1SiQGate {
     return receipt;
   }
 
-  #acousticErrors(e: ActionEnvelope, now: number): string[] {
+  #duressCheck(e: ActionEnvelope, now: number): { errors: string[]; usable: boolean } {
+    const p = this.policy.duress;
+    const signals: unknown[] = [];
     const a = e?.acousticContext;
-    const p = this.policy.acoustic;
-    if (a === undefined || a === null) return ['acoustic_telemetry_missing'];
-    const nums = [a.vocalTensionScore, a.signalQuality, a.capturedAt];
-    if (!nums.every((n) => typeof n === 'number' && Number.isFinite(n))) return ['acoustic_telemetry_malformed'];
-    if (a.vocalTensionScore < 0 || a.vocalTensionScore > 1 || a.signalQuality < 0 || a.signalQuality > 1) {
-      return ['acoustic_telemetry_out_of_range'];
+    if (a !== undefined && a !== null) {
+      signals.push({ modality: 'acoustic', tensionScore: a.vocalTensionScore, signalQuality: a.signalQuality, capturedAt: a.capturedAt });
     }
-    const out: string[] = [];
-    if (a.signalQuality < p.minSignalQuality) out.push('acoustic_signal_degraded');
-    if (now - a.capturedAt > p.maxAgeMs || a.capturedAt - now > CLOCK_SKEW_MS) out.push('acoustic_telemetry_stale');
-    if (a.vocalTensionScore > p.maxTension) out.push('acoustic_tension_exceeds_threshold');
-    return out;
+    if (e?.duressSignals !== undefined) {
+      if (!Array.isArray(e.duressSignals)) return { errors: ['duress_signals_invalid'], usable: false };
+      signals.push(...e.duressSignals);
+    }
+    const errors: string[] = [];
+    let usable = 0;
+    for (const raw of signals) {
+      const sig = raw as Partial<DuressSignal> | null;
+      const m = sig && typeof sig === 'object' && DURESS_MODALITIES.includes(sig.modality as DuressModality) ? sig.modality : null;
+      if (!m) {
+        errors.push('duress_signal_modality_invalid');
+        continue;
+      }
+      const nums = [sig!.tensionScore, sig!.signalQuality, sig!.capturedAt];
+      if (!nums.every((n) => typeof n === 'number' && Number.isFinite(n))) {
+        errors.push(`duress_signal_malformed:${m}`);
+        continue;
+      }
+      const { tensionScore, signalQuality, capturedAt } = sig as DuressSignal;
+      if (tensionScore < 0 || tensionScore > 1 || signalQuality < 0 || signalQuality > 1) {
+        errors.push(`duress_signal_out_of_range:${m}`);
+        continue;
+      }
+      const fresh = now - capturedAt <= p.maxAgeMs && capturedAt - now <= CLOCK_SKEW_MS;
+      if (signalQuality < p.minSignalQuality || !fresh) continue; // degraded or stale: not usable, not calm
+      usable++;
+      if (tensionScore > p.maxTension) errors.push(`duress_tension_exceeds_threshold:${m}`);
+    }
+    return { errors, usable: usable > 0 };
   }
 
   async #consentError(
@@ -253,10 +294,13 @@ function validatePolicy(p: GatePolicy): void {
   for (const [name, a] of Object.entries(p.actions ?? {})) {
     if (!isRiskTier(a.tier)) throw new Error(`policy_action_tier_invalid:${name}`);
   }
-  for (const t of [p.evidenceRequiredFrom, p.acousticRequiredFrom, p.consentRequiredFrom]) {
+  for (const t of [p.evidenceRequiredFrom, p.duressRequiredFrom, p.consentRequiredFrom]) {
     if (!isRiskTier(t)) throw new Error('policy_threshold_tier_invalid');
   }
-  const { maxTension, minSignalQuality, maxAgeMs } = p.acoustic ?? ({} as GatePolicy['acoustic']);
+  const { maxTension, minSignalQuality, maxAgeMs, onNoUsableSignal } = p.duress ?? ({} as GatePolicy['duress']);
+  if (onNoUsableSignal !== 'deny' && onNoUsableSignal !== 'require_strong_presence') {
+    throw new Error('policy_duress_on_no_usable_signal_invalid');
+  }
   if (![maxTension, minSignalQuality, maxAgeMs, p.receiptTtlMs].every((n) => Number.isFinite(n) && n >= 0)) {
     throw new Error('policy_numeric_invalid');
   }

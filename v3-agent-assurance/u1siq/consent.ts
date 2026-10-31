@@ -11,7 +11,7 @@
  * one set of parameters does not approve another under the same id.
  */
 import { b64url, canonicalize, fromB64url, utf8 } from './canonical.ts';
-import type { ConsentClaims, ConsentToken, RiskTier } from './types.ts';
+import type { ConsentClaims, ConsentToken, PresenceLevel, RiskTier } from './types.ts';
 
 export interface RegisteredApprover {
   publicKey: CryptoKey;
@@ -39,7 +39,12 @@ export class Approver {
   }
 
   /** Called after the human has reviewed the exact envelope whose hash is passed in. */
-  async approve(proposalId: string, envelopeHash: string, ttlMs: number): Promise<ConsentToken> {
+  async approve(
+    proposalId: string,
+    envelopeHash: string,
+    ttlMs: number,
+    presence: PresenceLevel = 'standard',
+  ): Promise<ConsentToken> {
     const issuedAt = this.#now();
     const claims: ConsentClaims = {
       proposalId,
@@ -48,6 +53,7 @@ export class Approver {
       issuedAt,
       expiresAt: issuedAt + ttlMs,
       nonce: crypto.randomUUID(),
+      presence,
     };
     const sig = await crypto.subtle.sign('Ed25519', this.#privateKey, utf8(canonicalize(claims)));
     return { ...claims, signature: b64url(sig) };

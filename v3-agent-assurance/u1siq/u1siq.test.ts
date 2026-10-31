@@ -19,7 +19,7 @@ import {
   verifyChain,
   type ReceiptLedger,
 } from './ledger.ts';
-import type { ActionEnvelope, ConsentToken, GatePolicy, SignedReceipt } from './types.ts';
+import type { ActionEnvelope, ConsentToken, GatePolicy, PresenceLevel, SignedReceipt } from './types.ts';
 
 const T0 = 1_800_000_000_000;
 
@@ -31,14 +31,14 @@ const POLICY: GatePolicy = {
     'message.send': { tier: 'TIER_2_EXTERNAL', allowedResources: ['care-team'] },
     'payment.send': { tier: 'TIER_3_IRREVERSIBLE' },
   },
-  acoustic: { maxTension: 0.7, minSignalQuality: 0.6, maxAgeMs: 30_000 },
+  duress: { maxTension: 0.7, minSignalQuality: 0.6, maxAgeMs: 30_000, onNoUsableSignal: 'require_strong_presence' },
   evidenceRequiredFrom: 'TIER_1_WRITE',
-  acousticRequiredFrom: 'TIER_2_EXTERNAL',
+  duressRequiredFrom: 'TIER_2_EXTERNAL',
   consentRequiredFrom: 'TIER_2_EXTERNAL',
   receiptTtlMs: 60_000,
 };
 
-async function setup<L extends ReceiptLedger = MemoryLedger>(opts: { ledger?: L } = {}) {
+async function setup<L extends ReceiptLedger = MemoryLedger>(opts: { ledger?: L; policy?: GatePolicy } = {}) {
   let now = T0;
   const clock = () => now;
   const ledger = (opts.ledger ?? new MemoryLedger()) as L;
@@ -46,7 +46,7 @@ async function setup<L extends ReceiptLedger = MemoryLedger>(opts: { ledger?: L 
   const human = await Approver.create('clinician-1', clock);
   const junior = await Approver.create('intern-1', clock);
   const gate = await U1SiQGate.create({
-    policy: POLICY,
+    policy: opts.policy ?? POLICY,
     ledger,
     evidence,
     approvers: new Map([
@@ -73,8 +73,12 @@ async function setup<L extends ReceiptLedger = MemoryLedger>(opts: { ledger?: L 
     createdAt: T0,
     ...over,
   });
-  const approve = async (e: ActionEnvelope, who = human, ttl = 60_000): Promise<ConsentToken> =>
-    who.approve(e.proposalId, await hashCanonical(e), ttl);
+  const approve = async (
+    e: ActionEnvelope,
+    who = human,
+    ttl = 60_000,
+    presence: PresenceLevel = 'standard',
+  ): Promise<ConsentToken> => who.approve(e.proposalId, await hashCanonical(e), ttl, presence);
   return { gate, enforcer, ledger, evidence, human, junior, env, approve, ev, advance: (ms: number) => (now += ms) };
 }
 
@@ -128,7 +132,7 @@ test('fabricated envelope via direct evaluate(): self-declared tier and status b
   assert.equal(r.decision, 'DENY');
   assert.equal(r.effectiveRiskTier, 'TIER_3_IRREVERSIBLE');
   assert.equal(r.epistemicStatus, 'UNVERIFIED');
-  for (const reason of ['evidence_unverified:ffffffffffff', 'acoustic_telemetry_missing', 'human_consent_required']) {
+  for (const reason of ['evidence_unverified:ffffffffffff', 'human_consent_required']) {
     assert.ok(r.reasons.includes(reason), `missing ${reason} in ${r.reasons}`);
   }
 });
@@ -192,7 +196,7 @@ test('a valid consent is not reported as failing when another gate denies', asyn
   const e1 = s.env({ acousticContext: undefined });
   // Consent is over the envelope hash, so a different envelope needs its own consent.
   const r1 = await s.gate.evaluate(e1, await s.approve(e1));
-  assert.ok(r1.reasons.includes('acoustic_telemetry_missing'));
+  assert.ok(r1.reasons.includes('duress_signal_unavailable_strong_presence_required'));
   assert.ok(!r1.reasons.some((x) => x.startsWith('consent_')));
 });
 
@@ -206,22 +210,48 @@ test('expired consent is rejected', async () => {
 });
 
 // --- Finding: acoustic check fails open ------------------------------------
+// Gate 4 no longer reads a missing signal as calm. It also no longer requires
+// a voice: any modality counts, and with no usable signal it steps up to a
+// strong-presence approval (KV62 accessibility rule: never voice-only).
+
+const calm = (modality: string, over: object = {}) => ({
+  modality, tensionScore: 0.1, signalQuality: 0.9, capturedAt: T0 - 1_000, ...over,
+});
+
+for (const [name, ctx] of [
+  ['missing', undefined],
+  ['degraded', { vocalTensionScore: 0.1, signalQuality: 0.2, capturedAt: T0 }],
+  ['stale', { vocalTensionScore: 0.1, signalQuality: 0.9, capturedAt: T0 - 120_000 }],
+  ['future-dated', { vocalTensionScore: 0.1, signalQuality: 0.9, capturedAt: T0 + 60_000 }],
+] as const) {
+  test(`no usable duress signal (${name}) is not read as calm: standard approval denied`, async () => {
+    const s = await setup();
+    const e = s.env({ acousticContext: ctx as ActionEnvelope['acousticContext'] });
+    const r = await s.gate.evaluate(e, await s.approve(e));
+    assert.equal(r.decision, 'DENY');
+    assert.ok(r.reasons.includes('duress_signal_unavailable_strong_presence_required'), `${r.reasons}`);
+  });
+
+  test(`no usable duress signal (${name}) steps up: strong-presence approval allowed`, async () => {
+    const s = await setup();
+    const e = s.env({ acousticContext: ctx as ActionEnvelope['acousticContext'] });
+    const r = await s.gate.evaluate(e, await s.approve(e, s.human, 60_000, 'strong'));
+    assert.equal(r.decision, 'ALLOW', `${r.reasons}`);
+    assert.equal(r.duressPath, 'strong_presence');
+  });
+}
 
 for (const [name, ctx, reason] of [
-  ['missing', undefined, 'acoustic_telemetry_missing'],
-  ['degraded', { vocalTensionScore: 0.1, signalQuality: 0.2, capturedAt: T0 }, 'acoustic_signal_degraded'],
-  ['stale', { vocalTensionScore: 0.1, signalQuality: 0.9, capturedAt: T0 - 120_000 }, 'acoustic_telemetry_stale'],
-  ['future-dated', { vocalTensionScore: 0.1, signalQuality: 0.9, capturedAt: T0 + 60_000 }, 'acoustic_telemetry_stale'],
-  ['tense', { vocalTensionScore: 0.95, signalQuality: 0.9, capturedAt: T0 }, 'acoustic_tension_exceeds_threshold'],
-  ['NaN score', { vocalTensionScore: NaN, signalQuality: 0.9, capturedAt: T0 }, 'acoustic_telemetry_malformed'],
-  ['negative score', { vocalTensionScore: -1, signalQuality: 0.9, capturedAt: T0 }, 'acoustic_telemetry_out_of_range'],
+  ['tense', { vocalTensionScore: 0.95, signalQuality: 0.9, capturedAt: T0 }, 'duress_tension_exceeds_threshold:acoustic'],
+  ['NaN score', { vocalTensionScore: NaN, signalQuality: 0.9, capturedAt: T0 }, 'duress_signal_malformed:acoustic'],
+  ['negative score', { vocalTensionScore: -1, signalQuality: 0.9, capturedAt: T0 }, 'duress_signal_out_of_range:acoustic'],
 ] as const) {
-  test(`acoustic gate fails closed: ${name}`, async () => {
+  test(`duress gate denies even with strong presence: ${name}`, async () => {
     const s = await setup();
     const e = s.env({ acousticContext: ctx as ActionEnvelope['acousticContext'] });
     let consent: ConsentToken | undefined;
     try {
-      consent = await s.approve(e);
+      consent = await s.approve(e, s.human, 60_000, 'strong');
     } catch {
       consent = undefined; // NaN is not canonicalizable; the gate must still deny
     }
@@ -230,6 +260,69 @@ for (const [name, ctx, reason] of [
     assert.ok(r.reasons.includes(reason), `${r.reasons}`);
   });
 }
+
+test('Deaf user: calm signing signal satisfies Gate 4 with no voice at all', async () => {
+  const s = await setup();
+  const e = s.env({ acousticContext: undefined, duressSignals: [calm('signing') as never] });
+  const r = await s.gate.evaluate(e, await s.approve(e));
+  assert.equal(r.decision, 'ALLOW', `${r.reasons}`);
+  assert.equal(r.duressPath, 'signal');
+});
+
+test('tense signing signal denies, like a tense voice', async () => {
+  const s = await setup();
+  const e = s.env({ acousticContext: undefined, duressSignals: [calm('signing', { tensionScore: 0.9 }) as never] });
+  const r = await s.gate.evaluate(e, await s.approve(e, s.human, 60_000, 'strong'));
+  assert.ok(r.reasons.includes('duress_tension_exceeds_threshold:signing'), `${r.reasons}`);
+});
+
+test('degraded voice plus calm camera signal passes on the usable one', async () => {
+  const s = await setup();
+  const e = s.env({
+    acousticContext: { vocalTensionScore: 0.1, signalQuality: 0.1, capturedAt: T0 },
+    duressSignals: [calm('facial') as never],
+  });
+  const r = await s.gate.evaluate(e, await s.approve(e));
+  assert.equal(r.decision, 'ALLOW', `${r.reasons}`);
+});
+
+test('any tense usable modality denies even if another is calm', async () => {
+  const s = await setup();
+  const e = s.env({ duressSignals: [calm('signing', { tensionScore: 0.95 }) as never] });
+  const r = await s.gate.evaluate(e, await s.approve(e, s.human, 60_000, 'strong'));
+  assert.ok(r.reasons.includes('duress_tension_exceeds_threshold:signing'));
+});
+
+test('unknown modality and non-array duressSignals are rejected', async () => {
+  const s = await setup();
+  const e1 = s.env({ duressSignals: [calm('telepathy') as never] });
+  assert.ok((await s.gate.evaluate(e1, await s.approve(e1))).reasons.includes('duress_signal_modality_invalid'));
+  const e2 = s.env({ duressSignals: 'calm' as never });
+  assert.ok((await s.gate.evaluate(e2, await s.approve(e2))).reasons.includes('duress_signals_invalid'));
+});
+
+test('agent cannot fake strong presence by editing the consent token', async () => {
+  const s = await setup();
+  const e = s.env({ acousticContext: undefined });
+  const c = await s.approve(e);
+  const r = await s.gate.evaluate(e, { ...c, presence: 'strong' });
+  assert.ok(r.reasons.includes('consent_signature_invalid'));
+});
+
+test("policy 'deny' fails closed when no usable signal exists", async () => {
+  const s = await setup({ policy: { ...POLICY, duress: { ...POLICY.duress, onNoUsableSignal: 'deny' } } });
+  const e = s.env({ acousticContext: undefined });
+  const r = await s.gate.evaluate(e, await s.approve(e, s.human, 60_000, 'strong'));
+  assert.ok(r.reasons.includes('duress_signal_unavailable'));
+});
+
+test('step-up applies even below the consent tier when Gate 4 applies there', async () => {
+  const s = await setup({ policy: { ...POLICY, duressRequiredFrom: 'TIER_1_WRITE' } });
+  const e = s.env({ action: 'note.write', targetResource: 'chart', acousticContext: undefined });
+  assert.ok((await s.gate.evaluate(e)).reasons.includes('human_consent_required'));
+  const ok = await s.gate.evaluate(e, await s.approve(e, s.human, 60_000, 'strong'));
+  assert.equal(ok.decision, 'ALLOW', `${ok.reasons}`);
+});
 
 // --- Finding: evidence unverified; risk tier self-declared ----------------
 
@@ -254,7 +347,6 @@ test('under-declared tier is raised to the policy tier', async () => {
   const e = s.env({ declaredRiskTier: 'TIER_0_READ', acousticContext: undefined });
   const r = await s.gate.evaluate(e);
   assert.equal(r.effectiveRiskTier, 'TIER_2_EXTERNAL');
-  assert.ok(r.reasons.includes('acoustic_telemetry_missing'));
   assert.ok(r.reasons.includes('human_consent_required'));
 });
 

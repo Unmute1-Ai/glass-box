@@ -18,6 +18,30 @@ export function maxTier(a: RiskTier, b: RiskTier): RiskTier {
 /** Derived by the gate. Never accepted from the proposer. */
 export type EpistemicStatus = 'VERIFIED_FACT' | 'UNVERIFIED';
 
+/**
+ * Sensing modalities that can carry a duress/stress signal. Voice is one of
+ * several so Deaf and non-speaking users are not locked out of Gate 4.
+ */
+export type DuressModality = 'acoustic' | 'signing' | 'facial' | 'physiological';
+
+export const DURESS_MODALITIES: readonly DuressModality[] = Object.freeze([
+  'acoustic',
+  'signing',
+  'facial',
+  'physiological',
+]);
+
+export interface DuressSignal {
+  modality: DuressModality;
+  /** 0 (calm) .. 1 (maximum tension). */
+  tensionScore: number;
+  /** 0 (no usable signal) .. 1 (clean signal). */
+  signalQuality: number;
+  /** Epoch milliseconds when the sample was captured. */
+  capturedAt: number;
+}
+
+/** Legacy voice-only shape; the gate treats it as a DuressSignal with modality 'acoustic'. */
 export interface AcousticContext {
   /** 0 (calm) .. 1 (maximum tension). */
   vocalTensionScore: number;
@@ -39,6 +63,8 @@ export interface ActionEnvelope {
   /** sha256 hex of evidence registered through the trusted evidence ingest path. */
   evidenceHashes: string[];
   acousticContext?: AcousticContext;
+  /** Signals from any modality, e.g. sign-language affect from the camera. */
+  duressSignals?: DuressSignal[];
   createdAt: number;
 }
 
@@ -52,18 +78,25 @@ export interface GatePolicy {
   version: string;
   /** Unknown actions are denied. */
   actions: Record<string, ActionPolicy>;
-  acoustic: {
-    /** Deny when vocalTensionScore is above this. */
+  duress: {
+    /** Deny when any usable signal's tension is above this. */
     maxTension: number;
-    /** Treat signal below this as degraded and deny. */
+    /** Signals below this quality are not usable. */
     minSignalQuality: number;
-    /** Treat samples older than this as stale and deny. */
+    /** Signals older than this are not usable. */
     maxAgeMs: number;
+    /**
+     * What to do when no usable signal exists in any modality.
+     * 'require_strong_presence': step up to an approval signed after a strong
+     * presence check (biometric / hardware), so users without a voice channel
+     * are not denied outright. 'deny': fail closed.
+     */
+    onNoUsableSignal: 'require_strong_presence' | 'deny';
   };
   /** Minimum tier at which Gate 3 requires at least one verified evidence hash. */
   evidenceRequiredFrom: RiskTier;
-  /** Minimum tier at which Gate 4 (acoustic) applies. */
-  acousticRequiredFrom: RiskTier;
+  /** Minimum tier at which Gate 4 (duress signal) applies. */
+  duressRequiredFrom: RiskTier;
   /** Minimum tier at which Gate 5 (human consent) applies. */
   consentRequiredFrom: RiskTier;
   receiptTtlMs: number;
@@ -87,6 +120,8 @@ export interface ReceiptBody {
   issuedAt: number;
   expiresAt: number;
   consentApproverId?: string;
+  /** How Gate 4 was satisfied, when it applied. */
+  duressPath?: 'signal' | 'strong_presence';
 }
 
 export interface SignedReceipt extends ReceiptBody {
@@ -103,7 +138,12 @@ export interface ConsentClaims {
   issuedAt: number;
   expiresAt: number;
   nonce: string;
+  /** Presence check the approver's device ran before signing. Signed, so not forgeable by the agent. */
+  presence: PresenceLevel;
 }
+
+/** 'strong' = biometric or hardware-backed check; 'standard' = PIN or tap. Never voice-only. */
+export type PresenceLevel = 'standard' | 'strong';
 
 export interface ConsentToken extends ConsentClaims {
   /** Ed25519 by the approver's key over canonicalize(ConsentClaims), base64url. */
