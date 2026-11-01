@@ -35,3 +35,17 @@ jobs:
           name: agent-assurance-report
           path: v3-agent-assurance/report.json
           if-no-files-found: ignore
+
+  u1siq-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.x"
+      - name: Run U1SiQ gate tests
+        working-directory: v3-agent-assurance/u1siq
+        run: node --test
+      - name: Typecheck
+        working-directory: v3-agent-assurance/u1siq
+        run: npm ci && npm run typecheck
