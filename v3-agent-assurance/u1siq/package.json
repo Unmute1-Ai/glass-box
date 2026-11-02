@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "node --test",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json",
+    "bench": "node bench/run.ts --check"
   },
   "devDependencies": {
     "@types/node": "22.19.1",

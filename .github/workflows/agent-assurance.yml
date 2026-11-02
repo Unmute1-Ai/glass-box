@@ -49,3 +49,13 @@ jobs:
       - name: Typecheck
         working-directory: v3-agent-assurance/u1siq
         run: npm ci && npm run typecheck
+      - name: AuthorityBench (measured against the gate)
+        working-directory: v3-agent-assurance/u1siq
+        run: node bench/run.ts --check --out-dir bench/out
+      - name: Upload AuthorityBench results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: authoritybench-results
+          path: v3-agent-assurance/u1siq/bench/out/
+          if-no-files-found: ignore
