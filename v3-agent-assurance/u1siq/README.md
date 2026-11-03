@@ -48,3 +48,4 @@ A working reference with tests, run in CI (`.github/workflows/agent-assurance.ym
 - `enforcer.ts`: `U1SiQEnforcer`, the only path to an effect.
 - `ledger.ts`: memory and JSONL ledgers, consumed stores, `verifyChain`.
 - `u1siq.test.ts`: regression tests, one or more per review finding.
+- `bench/`: AuthorityBench. The 43 AB suites run as real attacks and controls against this gate, with measured outcomes, two known gaps (AB-16, AB-40) and the reason each of the 17 uncovered suites is out of reach. See `bench/README.md`.

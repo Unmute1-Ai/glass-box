@@ -1,0 +1,47 @@
+---
+license: apache-2.0
+pretty_name: U1 AuthorityBench (U1SiQ gate, measured)
+tags:
+  - agent-security
+  - authorization
+  - benchmark
+  - synthetic
+configs:
+  - config_name: default
+    data_files:
+      - split: results
+        path: authoritybench-results.jsonl
+---
+
+# U1 AuthorityBench: measured results for the U1SiQ gate
+
+Each row is the **measured** outcome of one scenario run against the open-source U1SiQ reference gate and enforcer (`Unmute1-Ai/glass-box`, `v3-agent-assurance/u1siq`). Rows come from `node bench/run.ts`; nothing is assigned by hand.
+
+## What a row means
+
+| Field | Meaning |
+|---|---|
+| `case` | `attack`, `control` (legitimate version that must be allowed), or `none` (suite not covered) |
+| `outcome` | `BLOCKED` / `BYPASSED` for attacks, `ALLOWED` / `FALSE_POSITIVE` for controls, `NOT_COVERED` |
+| `coverage` | `direct`: the gate checks the targeted property. `consequence_only`: the attack itself is not detected; only its consequential action is blocked |
+| `stopped_at` | `gate`, `enforcer`, or `effect` (the effect ran) |
+| `reasons` | Verbatim gate reasons or enforcer error code |
+| `blocked_for_intended_reason` | Whether a block came from the property the suite targets |
+| `receipt_hash`, `ledger_chain_ok` | The gate's signed receipt hash and a chain re-verification for that run |
+
+## Headline (policy `authoritybench-1`)
+
+26 of 43 suites executed. 24 attacks blocked (19 direct, 5 consequence-only) and **2 bypassed (AB-16, AB-40)**. 26 of 26 controls allowed, with 0 false positives. 17 suites not covered.
+
+## Do not read this as
+
+- **A certification or a deployed-system result.** It is synthetic scenarios against a reference implementation that shares a process with the agent.
+- **"43 of 43 passed."** Not-covered suites are untested.
+- **Prompt-injection detection.** Consequence-only rows show the injected action was stopped, not that the injection was seen.
+- **Evidence about other models or products.** No other system was run.
+
+## Reproduce
+
+    git clone https://github.com/Unmute1-Ai/glass-box
+    cd glass-box/v3-agent-assurance/u1siq
+    node bench/run.ts --check --out-dir out    # Node 22.18+
