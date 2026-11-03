@@ -3,7 +3,7 @@
 A TypeScript reference for the U1SiQ five-gate authority check and its tool-side enforcer. It is a rewrite that closes the gaps found in the implementation review. It has no runtime dependencies; it uses only WebCrypto (Ed25519), `node:fs` and `node:test`.
 
     cd v3-agent-assurance/u1siq
-    node --test            # Node 22.18+; 51 regression tests
+    node --test            # Node 22.18+; 67 regression tests
     npm run typecheck      # needs @types/node and TypeScript 5.8+
 
 ## What changed versus the reviewed code
@@ -47,5 +47,6 @@ A working reference with tests, run in CI (`.github/workflows/agent-assurance.ym
 - `consent.ts`: `Approver` and consent signature verification.
 - `enforcer.ts`: `U1SiQEnforcer`, the only path to an effect.
 - `ledger.ts`: memory and JSONL ledgers, consumed stores, `verifyChain`.
+- `time.ts`: `TimeAuthority`, `TrustedClock` (signed, nonce-bound time) and `MonotonicClock` for receipt expiry.
 - `u1siq.test.ts`: regression tests, one or more per review finding.
-- `bench/`: AuthorityBench. The 43 AB suites run as real attacks and controls against this gate, with measured outcomes, two known gaps (AB-16, AB-40) and the reason each of the 17 uncovered suites is out of reach. See `bench/README.md`.
+- `bench/`: AuthorityBench. The 43 AB suites run as real attacks and controls against this gate, with measured outcomes (AB-16 and AB-40 found and fixed) and the reason each of the 17 uncovered suites is out of reach. See `bench/README.md`.

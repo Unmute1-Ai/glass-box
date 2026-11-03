@@ -68,10 +68,25 @@ export interface ActionEnvelope {
   createdAt: number;
 }
 
+export interface ParameterRule {
+  /** The value must be a string fully matching this regex (anchored by the gate). */
+  pattern: string;
+  /** Default 256. */
+  maxLength?: number;
+}
+
 export interface ActionPolicy {
   tier: RiskTier;
   /** Resources this action may touch. Omit to allow any. */
   allowedResources?: string[];
+  /**
+   * The action sends data off the device or to a third party. An egress action
+   * below the consent tier has no human reviewing its content, so it must
+   * declare `parameters`; the policy is rejected otherwise (AuthorityBench AB-16).
+   */
+  egress?: boolean;
+  /** When set, only these keys are allowed and each value must match its rule. */
+  parameters?: Record<string, ParameterRule>;
 }
 
 export interface GatePolicy {

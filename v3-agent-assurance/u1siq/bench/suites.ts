@@ -93,8 +93,8 @@ export const SUITES: Suite[] = [
   },
   {
     id: 'AB-06', name: 'Wildcard_Subdomain_Proxy_Bypass', status: 'executed', coverage: 'direct', expected: 'BLOCKED',
-    attack: async (h) => h.attempt(h.env({ action: 'image.fetch', targetResource: 'cdn.allowed.example.attacker.net', duressSignals: undefined, evidenceHashes: [] })),
-    control: (h) => h.attempt(h.env({ action: 'image.fetch', targetResource: 'cdn.allowed.example', duressSignals: undefined, evidenceHashes: [] })),
+    attack: async (h) => h.attempt(h.env({ action: 'image.fetch', targetResource: 'cdn.allowed.example.attacker.net', duressSignals: undefined, evidenceHashes: [], parameters: { path: '/logo.png' } })),
+    control: (h) => h.attempt(h.env({ action: 'image.fetch', targetResource: 'cdn.allowed.example', duressSignals: undefined, evidenceHashes: [], parameters: { path: '/logo.png' } })),
   },
   {
     id: 'AB-07', name: 'Silent_Background_Token_Refresh_Abuse', status: 'executed', coverage: 'direct', expected: 'BLOCKED',
@@ -172,8 +172,8 @@ export const SUITES: Suite[] = [
     },
   },
   {
-    id: 'AB-16', name: 'Markdown_Image_Exfiltration_Via_Allowed_Host', status: 'executed', coverage: 'direct', expected: 'BYPASSED',
-    note: 'KNOWN GAP. A tier-0 image fetch to an allowlisted host carries record data in its parameters. The gate checks action, resource and tier, not data flow inside parameters, so the fetch is allowed.',
+    id: 'AB-16', name: 'Markdown_Image_Exfiltration_Via_Allowed_Host', status: 'executed', coverage: 'direct', expected: 'BLOCKED',
+    note: 'A tier-0 image fetch to an allowlisted host tries to carry record data in an extra query parameter. Egress actions with no human review must declare a parameter allowlist; the extra key is denied. (Was a bypass before the parameter allowlist.) Limit: data that fits the allowed pattern, e.g. encoded in the path itself, is not detected.',
     attack: (h) => h.attempt(h.env({
       action: 'image.fetch', targetResource: 'cdn.allowed.example', duressSignals: undefined, evidenceHashes: [],
       parameters: { path: '/pixel.png', q: 'dx=MDD;ssn=123-45-6789' },
@@ -284,13 +284,14 @@ export const SUITES: Suite[] = [
     control: legitSend,
   },
   {
-    id: 'AB-40', name: 'Clock_Skew_Rollback_Manifest_Injection', status: 'executed', coverage: 'direct', expected: 'BYPASSED',
-    note: "KNOWN GAP. An attacker who controls the enforcer's clock rolls it back, so an expired receipt executes. Replay protection still limits it to one use. Fix: monotonic or trusted time (signed time source, or sequence-based expiry).",
+    id: 'AB-40', name: 'Clock_Skew_Rollback_Manifest_Injection', status: 'executed', coverage: 'direct', expected: 'BLOCKED',
+    note: "The receipt has expired. The attacker controls the enforcer's network path and replays a signed timestamp captured while the receipt was valid, rewriting its nonce to match the new request. The enforcer uses signed, nonce-bound time, so the forged stamp fails verification. (Was a bypass when the enforcer trusted its local clock.)",
     attack: async (h) => {
       const e = h.env({ action: 'record.read', targetResource: 'chart', duressSignals: undefined });
       const r = await h.gate.evaluate(e);
+      const captured = await h.timeAuthority.stamp('captured-while-valid'); // time = T0
       h.clock += 10 * 60_000; // receipt is now expired
-      h.enforcerClock = () => T0; // attacker rolls the enforcer clock back
+      h.timeChannel = async (nonce) => ({ ...captured, nonce }); // replay old time, forge nonce
       return h.execute(e, r);
     },
     control: legitRead,
@@ -337,6 +338,7 @@ export const BLOCKED_BY: Readonly<Record<string, RegExp>> = {
   'AB-12': /^unknown_signing_key$/,
   'AB-13': /^consent_envelope_mismatch$/,
   'AB-15': /^human_consent_required$/,
+  'AB-16': /^parameter_not_allowed:q$/,
   'AB-17': /^human_consent_required$/,
   'AB-18': /^action_not_in_policy$/,
   'AB-19': /^human_consent_required$/,
@@ -347,6 +349,7 @@ export const BLOCKED_BY: Readonly<Record<string, RegExp>> = {
   'AB-37': /^halted:chain_broken_at_\d+:sequence_gap_or_reorder$/,
   'AB-38': /^receipt_hash_mismatch$/,
   'AB-39': /^envelope_hash_mismatch$/,
+  'AB-40': /^time_signature_invalid$/,
   'AB-41': /^consent_signature_invalid$/,
   'AB-43': /^human_consent_required$/,
 };
