@@ -4,7 +4,9 @@
  * Before running an effect it checks, in order:
  *   1. not halted by an earlier chain break
  *   2. receipt hash and signature against the keyring
- *   3. decision is ALLOW and the receipt has not expired
+ *   3. decision is ALLOW and the receipt has not expired, by a clock that
+ *      cannot move backwards (signed time from a TrustedClock, or at least a
+ *      MonotonicClock)
  *   4. receipt.envelopeHash equals the hash of the envelope being executed
  *   5. the ledger chain is intact and contains this exact receipt
  *   6. the receipt has not been consumed (replay)
@@ -21,6 +23,7 @@ import {
   type Keyring,
   type ReceiptLedger,
 } from './ledger.ts';
+import { ClockError, MonotonicClock, type EnforcerClock } from './time.ts';
 import { GENESIS_HASH, type ActionEnvelope, type SignedReceipt } from './types.ts';
 
 export class EnforcementError extends Error {
@@ -36,6 +39,13 @@ export interface EnforcerOptions {
   /** Read access to the gate's ledger, or a replica of it. */
   ledger: ReceiptLedger;
   consumed: ConsumedStore;
+  /**
+   * Time source for receipt expiry. Prefer a TrustedClock (signed, nonce-bound
+   * time from an authority outside the agent's trust domain). A plain function
+   * is wrapped in a MonotonicClock, so the clock can never move backwards.
+   */
+  clock?: EnforcerClock;
+  /** Plain clock, used only when `clock` is not given. */
   now?: () => number;
 }
 
@@ -43,7 +53,7 @@ export class U1SiQEnforcer {
   #keyring: Keyring;
   #ledger: ReceiptLedger;
   #consumed: ConsumedStore;
-  #now: () => number;
+  #clock: EnforcerClock;
   /** The enforcer's own record of verified receipt hashes, index i = sequence i + 1. */
   #verified: string[] = [];
   #halted: string | null = null;
@@ -53,7 +63,7 @@ export class U1SiQEnforcer {
     this.#keyring = new Map(o.keyring);
     this.#ledger = o.ledger;
     this.#consumed = o.consumed;
-    this.#now = o.now ?? Date.now;
+    this.#clock = o.clock ?? new MonotonicClock(o.now ?? Date.now);
   }
 
   get halted(): string | null {
@@ -73,7 +83,13 @@ export class U1SiQEnforcer {
     const bad = await verifyReceipt(receipt, this.#keyring);
     if (bad) throw new EnforcementError(bad);
     if (receipt.decision !== 'ALLOW') throw new EnforcementError('receipt_not_allow');
-    if (this.#now() > receipt.expiresAt) throw new EnforcementError('receipt_expired');
+    let now: number;
+    try {
+      now = await this.#clock.now();
+    } catch (err) {
+      throw new EnforcementError(err instanceof ClockError ? err.code : 'clock_unavailable');
+    }
+    if (now > receipt.expiresAt) throw new EnforcementError('receipt_expired');
 
     let envelopeHash: string;
     try {

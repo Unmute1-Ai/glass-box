@@ -8,6 +8,7 @@ import { Approver } from '../consent.ts';
 import { EnforcementError, U1SiQEnforcer } from '../enforcer.ts';
 import { EvidenceStore, U1SiQGate } from '../gate.ts';
 import { MemoryConsumedStore, MemoryLedger } from '../ledger.ts';
+import { TimeAuthority, TrustedClock, type SignedTime } from '../time.ts';
 import type { ActionEnvelope, ConsentToken, GatePolicy, PresenceLevel, SignedReceipt } from '../types.ts';
 
 export const T0 = 1_800_000_000_000;
@@ -16,7 +17,12 @@ export const BENCH_POLICY: GatePolicy = {
   version: 'authoritybench-1',
   actions: {
     'record.read': { tier: 'TIER_0_READ' },
-    'image.fetch': { tier: 'TIER_0_READ', allowedResources: ['cdn.allowed.example'] },
+    'image.fetch': {
+      tier: 'TIER_0_READ',
+      allowedResources: ['cdn.allowed.example'],
+      egress: true,
+      parameters: { path: { pattern: '/[A-Za-z0-9._/-]{1,128}' } },
+    },
     'note.write': { tier: 'TIER_1_WRITE', allowedResources: ['chart'] },
     'message.send': { tier: 'TIER_2_EXTERNAL', allowedResources: ['care-team'] },
     'payment.send': { tier: 'TIER_3_IRREVERSIBLE', allowedResources: ['acct-verified-payee'] },
@@ -54,7 +60,9 @@ export class Harness {
   human!: Approver;
   junior!: Approver;
   evidenceHash!: string;
-  enforcerClock = () => this.clock;
+  timeAuthority!: TimeAuthority;
+  /** The channel to the time authority. An attacker who controls the network can replace it. */
+  timeChannel: (nonce: string) => Promise<SignedTime> = (nonce) => this.timeAuthority.stamp(nonce);
 
   static async create(policy: GatePolicy = BENCH_POLICY): Promise<Harness> {
     const h = new Harness();
@@ -71,11 +79,12 @@ export class Harness {
       ]),
       now,
     });
+    h.timeAuthority = await TimeAuthority.create(now);
     h.enforcer = new U1SiQEnforcer({
       keyring: new Map([[h.gate.keyId, h.gate.publicKey]]),
       ledger: h.ledger,
       consumed: h.consumed,
-      now: () => h.enforcerClock(),
+      clock: new TrustedClock(h.timeAuthority.publicKey, (n) => h.timeChannel(n)),
     });
     h.evidenceHash = await h.evidence.register('intake transcript excerpt');
     return h;

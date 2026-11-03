@@ -76,6 +76,8 @@ export class U1SiQGate {
   #consentNonces: ConsumedStore;
   #now: () => number;
   #headHash: string;
+  /** Compiled parameter rules per action. */
+  #paramRules = new Map<string, Map<string, { re: RegExp; maxLength: number }>>();
   #queue: Promise<unknown> = Promise.resolve();
 
   private constructor(o: Required<Omit<GateOptions, 'signingKeyPair'>>, pair: CryptoKeyPair, keyId: string) {
@@ -88,6 +90,12 @@ export class U1SiQGate {
     this.#approvers = new Map(o.approvers);
     this.#consentNonces = o.consentNonces;
     this.#now = o.now;
+    for (const [name, a] of Object.entries(this.policy.actions)) {
+      if (!a.parameters) continue;
+      const m = new Map<string, { re: RegExp; maxLength: number }>();
+      for (const [k, r] of Object.entries(a.parameters)) m.set(k, { re: new RegExp(`^(?:${r.pattern})$`, 'u'), maxLength: r.maxLength ?? 256 });
+      this.#paramRules.set(name, m);
+    }
     const rows = o.ledger.entries();
     this.#headHash = rows.length ? rows[rows.length - 1].receiptHash : GENESIS_HASH;
   }
@@ -134,8 +142,12 @@ export class U1SiQGate {
     const actionPolicy = typeof envelope?.action === 'string' ? this.policy.actions[envelope.action] : undefined;
     if (!actionPolicy || !Object.hasOwn(this.policy.actions, envelope.action)) {
       reasons.push('action_not_in_policy');
-    } else if (actionPolicy.allowedResources && !actionPolicy.allowedResources.includes(envelope.targetResource)) {
-      reasons.push('resource_not_allowed_for_action');
+    } else {
+      if (actionPolicy.allowedResources && !actionPolicy.allowedResources.includes(envelope.targetResource)) {
+        reasons.push('resource_not_allowed_for_action');
+      }
+      const rules = this.#paramRules.get(envelope.action);
+      if (rules) reasons.push(...parameterErrors(envelope.parameters, rules));
     }
 
     // Gate 2: risk tier. Policy sets the floor; declaring lower changes nothing.
@@ -289,10 +301,36 @@ function shapeErrors(e: ActionEnvelope): string[] {
   return out;
 }
 
+function parameterErrors(
+  params: Record<string, unknown>,
+  rules: Map<string, { re: RegExp; maxLength: number }>,
+): string[] {
+  if (!params || typeof params !== 'object' || Array.isArray(params)) return [];
+  const out: string[] = [];
+  for (const [k, v] of Object.entries(params)) {
+    const rule = rules.get(k);
+    if (!rule) out.push(`parameter_not_allowed:${k}`);
+    else if (typeof v !== 'string' || v.length > rule.maxLength || !rule.re.test(v)) out.push(`parameter_invalid:${k}`);
+  }
+  return out;
+}
+
 function validatePolicy(p: GatePolicy): void {
   if (!p?.version?.trim()) throw new Error('policy_version_required');
   for (const [name, a] of Object.entries(p.actions ?? {})) {
     if (!isRiskTier(a.tier)) throw new Error(`policy_action_tier_invalid:${name}`);
+    if (a.parameters) {
+      for (const [k, r] of Object.entries(a.parameters)) {
+        try {
+          new RegExp(`^(?:${r.pattern})$`, 'u');
+        } catch {
+          throw new Error(`policy_parameter_pattern_invalid:${name}.${k}`);
+        }
+      }
+    }
+    if (a.egress && !a.parameters && isRiskTier(p.consentRequiredFrom) && TIER_RANK[a.tier] < TIER_RANK[p.consentRequiredFrom]) {
+      throw new Error(`policy_egress_without_consent_requires_parameters:${name}`);
+    }
   }
   for (const t of [p.evidenceRequiredFrom, p.duressRequiredFrom, p.consentRequiredFrom]) {
     if (!isRiskTier(t)) throw new Error('policy_threshold_tier_invalid');
