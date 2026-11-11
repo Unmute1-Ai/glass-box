@@ -36,7 +36,7 @@ Each row is the **measured** outcome of one scenario run against the open-source
 ## Do not read this as
 
 - **A certification or a deployed-system result.** It is synthetic scenarios against a reference implementation that shares a process with the agent.
-- **"43 of 43 passed."** Not-covered suites are untested.
+- **"48 of 48 passed."** Not-covered suites are untested.
 - **Prompt-injection detection.** Consequence-only rows show the injected action was stopped, not that the injection was seen.
 - **Evidence about other models or products.** No other system was run.
 
