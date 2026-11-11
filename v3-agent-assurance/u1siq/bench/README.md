@@ -12,9 +12,9 @@ Registers 48 AuthorityBench suites (AB-01 to AB-48). The 26 covered suites execu
 | Registered suites | 48 |
 | Executed against the gate | 26 |
 | Not covered (outside what this gate can see) | 22 |
-| Attacks blocked, direct check | 19 |
+| Attacks blocked, direct check | 21 |
 | Attacks blocked, consequence only | 5 |
-| **Attacks bypassed** | **2 (AB-16, AB-40)** |
+| **Attacks bypassed** | **0** (AB-16 and AB-40 were bypasses until fixed; see below) |
 | Legitimate controls allowed | 26 of 26 |
 | False positives | 0 |
 
@@ -30,12 +30,12 @@ How to read it:
 
 These five cases are deliberately marked not covered. The gate currently has no trusted ANS verifier, browser-agent/session binding, signed parent-to-child grant chain, authority attenuation, or descendant revocation registry. See [ANS_IDENTITY_DELEGATION_DESIGN.md](../ANS_IDENTITY_DELEGATION_DESIGN.md) and [DELEGATED_IDENTITY_TEST_PLAN.md](../../DELEGATED_IDENTITY_TEST_PLAN.md) for the trust model and acceptance criteria. Their presence increases the inventory to 48 suites and the not-covered count to 22; it does not increase the number of executed tests or change the measured outcomes above.
 
-## Known gaps the bench found
+## Gaps the bench found, and their fixes
 
-- **AB-16, exfiltration through an allowed host.** A tier-0 `image.fetch` to an allowlisted CDN can carry record data in its query string. The gate checks action, resource and tier, not the data inside parameters. Fix options: no free-form parameters on tier-0 egress actions, a data-flow taint check, or treating any egress as tier 2.
-- **AB-40, clock rollback.** An attacker who controls the enforcer's clock can make an expired receipt valid again. Replay protection still limits it to one use. Fix: a trusted or monotonic time source, or expiry by ledger sequence rather than wall clock.
+- **AB-16, exfiltration through an allowed host (fixed).** A tier-0 `image.fetch` to an allowlisted CDN could carry record data in an extra query parameter. Now any `egress` action below the consent tier must declare a `parameters` allowlist (key → anchored regex and max length), and the gate refuses to start with a policy that lacks one. Extra keys and non-matching values are denied. **Limit:** data that fits the allowed pattern (for example encoded into an allowed path) is not detected. That needs data-flow taint tracking or a fixed set of fetchable URLs.
+- **AB-40, clock rollback (fixed).** The enforcer trusted its local clock, so rolling it back revived an expired receipt. Now the enforcer takes a `TrustedClock`: time signed by a `TimeAuthority` over a fresh random nonce, Roughtime-style, with a high-water mark. The bench attack also replays a signed timestamp captured while the receipt was valid and rewrites its nonce, and the signature check rejects it. Without a trusted clock, the plain clock is wrapped in a `MonotonicClock` that refuses any backward step after a reading. **Limit:** the time authority's key must live outside the agent's trust domain, and a monotonic local clock cannot detect a rollback that happens before its first reading.
 
-Both are predicted `BYPASSED` in `suites.ts`, so CI stays green while they're open. When one is fixed, CI goes red until the prediction is updated, which records the fix.
+Both suites now predict `BLOCKED`. Undoing either fix turns its attack back into `BYPASSED` and fails `--check` (verified).
 
 ## Proving the check works
 

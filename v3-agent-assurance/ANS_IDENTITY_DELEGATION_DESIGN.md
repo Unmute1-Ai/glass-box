@@ -166,7 +166,7 @@ Each eventual executable suite must have an attack and a legitimate control. The
 - Pair every attack with a legitimate control.
 - Require zero unauthorized effects, zero identity/attribution bypasses, correct intended denial reasons, and bounded revocation propagation.
 - Run clean-clone CI and retain raw result files, environment details, source commit, and signed evidence.
-- Preserve AB-16 and AB-40 as known bypasses until independently fixed and remeasured.
+- AB-16 and AB-40 were bypasses in the first AuthorityBench run. Both now have fixes in the gate (egress parameter allowlist; signed, nonce-bound enforcer time) and are remeasured as `BLOCKED` in this repository's CI, where reverting either fix fails `--check`. Independent re-measurement is still outstanding; until it is done, cite them as fixed by the authors, not as independently verified.
 
 ## 9. Explicit non-claims
 

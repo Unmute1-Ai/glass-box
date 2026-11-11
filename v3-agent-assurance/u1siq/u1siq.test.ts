@@ -11,6 +11,7 @@ import { canonicalize, CanonicalizationError, hashCanonical, keyIdFor } from './
 import { Approver } from './consent.ts';
 import { EnforcementError, U1SiQEnforcer } from './enforcer.ts';
 import { EvidenceStore, U1SiQGate } from './gate.ts';
+import { ClockError, TimeAuthority, TrustedClock, type SignedTime } from './time.ts';
 import {
   JsonlConsumedStore,
   JsonlLedger,
@@ -566,4 +567,135 @@ test('policy is frozen after construction', async () => {
   assert.throws(() => {
     (s.gate.policy.actions['payment.send'] as { tier: string }).tier = 'TIER_0_READ';
   }, TypeError);
+});
+
+// --- AuthorityBench AB-16: egress parameter allowlist -----------------------
+
+const EGRESS_POLICY: GatePolicy = {
+  ...POLICY,
+  actions: {
+    ...POLICY.actions,
+    'image.fetch': {
+      tier: 'TIER_0_READ',
+      allowedResources: ['cdn.allowed.example'],
+      egress: true,
+      parameters: { path: { pattern: '/[A-Za-z0-9._/-]{1,64}', maxLength: 64 } },
+    },
+  },
+};
+
+test('policy rejects an unreviewed egress action without a parameter allowlist', async () => {
+  const bad: GatePolicy = { ...POLICY, actions: { ...POLICY.actions, 'image.fetch': { tier: 'TIER_0_READ', egress: true } } };
+  await assert.rejects(setup({ policy: bad }), /policy_egress_without_consent_requires_parameters:image.fetch/);
+});
+
+test('egress at or above the consent tier may omit the allowlist (a human reviews the content)', async () => {
+  const ok: GatePolicy = { ...POLICY, actions: { ...POLICY.actions, 'message.send': { tier: 'TIER_2_EXTERNAL', egress: true } } };
+  await setup({ policy: ok });
+});
+
+test('policy rejects an invalid parameter pattern', async () => {
+  const bad: GatePolicy = {
+    ...POLICY,
+    actions: { ...POLICY.actions, x: { tier: 'TIER_0_READ', parameters: { p: { pattern: '(' } } } },
+  };
+  await assert.rejects(setup({ policy: bad }), /policy_parameter_pattern_invalid:x.p/);
+});
+
+for (const [name, params, reason] of [
+  ['extra key smuggles data', { path: '/pixel.png', q: 'ssn=123-45-6789' }, 'parameter_not_allowed:q'],
+  ['query string in path', { path: '/pixel.png?ssn=123' }, 'parameter_invalid:path'],
+  ['non-string value', { path: ['/a.png'] }, 'parameter_invalid:path'],
+  ['too long', { path: '/' + 'a'.repeat(80) }, 'parameter_invalid:path'],
+  ['pattern is anchored', { path: 'x/a.png' }, 'parameter_invalid:path'],
+] as const) {
+  test(`egress parameter allowlist denies: ${name}`, async () => {
+    const s = await setup({ policy: EGRESS_POLICY });
+    const e = s.env({ action: 'image.fetch', targetResource: 'cdn.allowed.example', parameters: params as never, evidenceHashes: [], acousticContext: undefined });
+    const r = await s.gate.evaluate(e);
+    assert.equal(r.decision, 'DENY');
+    assert.ok(r.reasons.includes(reason), `${r.reasons}`);
+  });
+}
+
+test('egress parameter allowlist allows a conforming request', async () => {
+  const s = await setup({ policy: EGRESS_POLICY });
+  const e = s.env({ action: 'image.fetch', targetResource: 'cdn.allowed.example', parameters: { path: '/logo.png' }, evidenceHashes: [], acousticContext: undefined });
+  const r = await s.gate.evaluate(e);
+  assert.equal(r.decision, 'ALLOW', `${r.reasons}`);
+});
+
+// --- AuthorityBench AB-40: clock rollback ------------------------------------
+
+test('plain enforcer clock is monotonic: a rollback after a later reading is refused', async () => {
+  const s = await setup();
+  const read = (id: string) => s.env({ proposalId: id, action: 'record.read', acousticContext: undefined });
+  s.advance(30_000);
+  const late = await s.gate.evaluate(read('late'));
+  await s.enforcer.execute(read('late'), late, () => 1); // enforcer has now seen T0+30s
+  s.advance(-30_000); // attacker rolls the clock back
+  const r = await s.gate.evaluate(read('after-rollback'));
+  await rejects(s.enforcer.execute(read('after-rollback'), r, () => 1), 'clock_rollback_detected');
+});
+
+async function trustedSetup() {
+  let real = T0;
+  const authority = await TimeAuthority.create(() => real);
+  let channel: (n: string) => Promise<SignedTime> = (n) => authority.stamp(n);
+  const clock = new TrustedClock(authority.publicKey, (n) => channel(n));
+  return {
+    authority,
+    clock,
+    setReal: (t: number) => (real = t),
+    setChannel: (f: (n: string) => Promise<SignedTime>) => (channel = f),
+  };
+}
+
+test('trusted clock returns signed time for a fresh nonce', async () => {
+  const t = await trustedSetup();
+  assert.equal(await t.clock.now(), T0);
+});
+
+test('trusted clock rejects a replayed stamp (nonce mismatch)', async () => {
+  const t = await trustedSetup();
+  const old = await t.authority.stamp('old');
+  t.setChannel(async () => old);
+  await assert.rejects(t.clock.now(), (e: unknown) => e instanceof ClockError && e.code === 'time_nonce_mismatch');
+});
+
+test('trusted clock rejects a replayed stamp with a rewritten nonce (signature)', async () => {
+  const t = await trustedSetup();
+  const old = await t.authority.stamp('old');
+  t.setChannel(async (n) => ({ ...old, nonce: n }));
+  await assert.rejects(t.clock.now(), (e: unknown) => e instanceof ClockError && e.code === 'time_signature_invalid');
+});
+
+test('trusted clock rejects time signed by a different authority', async () => {
+  const t = await trustedSetup();
+  const rogue = await TimeAuthority.create(() => T0 - 10 ** 6);
+  t.setChannel((n) => rogue.stamp(n));
+  await assert.rejects(t.clock.now(), (e: unknown) => e instanceof ClockError && e.code === 'time_signature_invalid');
+});
+
+test('trusted clock refuses to move backwards even with valid signatures', async () => {
+  const t = await trustedSetup();
+  t.setReal(T0 + 60_000);
+  await t.clock.now();
+  t.setReal(T0);
+  await assert.rejects(t.clock.now(), (e: unknown) => e instanceof ClockError && e.code === 'clock_rollback_detected');
+});
+
+test('enforcer on trusted time rejects an expired receipt whatever the local clock says', async () => {
+  const s = await setup();
+  const t = await trustedSetup();
+  const enforcer = new U1SiQEnforcer({
+    keyring: new Map([[s.gate.keyId, s.gate.publicKey]]),
+    ledger: s.ledger,
+    consumed: new MemoryConsumedStore(),
+    clock: t.clock,
+  });
+  const e = s.env({ action: 'record.read', acousticContext: undefined });
+  const r = await s.gate.evaluate(e); // issued at T0, expires T0 + 60s
+  t.setReal(T0 + 10 * 60_000);
+  await rejects(enforcer.execute(e, r, () => 1), 'receipt_expired');
 });

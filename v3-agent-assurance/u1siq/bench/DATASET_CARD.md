@@ -31,7 +31,7 @@ Each row is the **measured** outcome of one scenario run against the open-source
 
 ## Headline (policy `authoritybench-1`)
 
-26 of 48 registered suites executed. 24 attacks blocked (19 direct, 5 consequence-only) and **2 bypassed (AB-16, AB-40)**. 26 of 26 controls allowed, with 0 false positives. 22 suites not covered (including five newly registered identity/delegation gaps, AB-44–AB-48).
+26 of 48 registered suites executed. 26 attacks blocked (21 direct, 5 consequence-only) and 0 bypassed. 26 of 26 controls allowed, with 0 false positives. 22 suites not covered (including five registered identity/delegation gaps, AB-44–AB-48). AB-16 and AB-40 were bypasses in the first run and were fixed in the gate. The fixes have stated limits; see `bench/README.md`.
 
 ## Do not read this as
 
