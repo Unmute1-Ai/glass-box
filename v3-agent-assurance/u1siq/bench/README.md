@@ -1,6 +1,6 @@
 # AuthorityBench for the U1SiQ gate
 
-Registers 48 AuthorityBench suites (AB-01 to AB-48) as real scenarios against the U1SiQ gate and enforcer in `../`, and records what actually happened. No outcome is written in by hand: an attack counts as **BLOCKED** only if its effect function never ran, and as **BYPASSED** if it did.
+Registers 48 AuthorityBench suites (AB-01 to AB-48). The 26 covered suites execute against the U1SiQ gate and enforcer in `../`; 22 are explicitly not covered and are not counted as passes. No outcome is written in by hand: an attack counts as **BLOCKED** only if its effect function never ran, and as **BYPASSED** if it did.
 
     cd v3-agent-assurance/u1siq
     node bench/run.ts --check        # writes bench/out/, exits 1 on any unexpected change
