@@ -49,4 +49,5 @@ A working reference with tests, run in CI (`.github/workflows/agent-assurance.ym
 - `ledger.ts`: memory and JSONL ledgers, consumed stores, `verifyChain`.
 - `time.ts`: `TimeAuthority`, `TrustedClock` (signed, nonce-bound time) and `MonotonicClock` for receipt expiry.
 - `u1siq.test.ts`: regression tests, one or more per review finding.
-- `bench/`: AuthorityBench. The 43 AB suites run as real attacks and controls against this gate, with measured outcomes (AB-16 and AB-40 found and fixed) and the reason each of the 17 uncovered suites is out of reach. See `bench/README.md`.
+- `bench/`: AuthorityBench. 48 registered AB suites; 26 execute as real attacks and controls against this gate, with measured outcomes (AB-16 and AB-40 found and fixed), and 22 are explicitly not covered. AB-44–AB-48 register ANS identity, browser-session attribution, inherited consent, scope attenuation, and descendant-revocation gaps; they are not test passes. See `bench/README.md`.
+- `../ANS_IDENTITY_DELEGATION_DESIGN.md`: proposed ANS verifier adapter, signed delegation chain, browser-session trust boundary, revocation semantics, and staged acceptance criteria.
