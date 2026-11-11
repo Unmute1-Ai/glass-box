@@ -101,7 +101,9 @@ Preferred path:
 - application receives both human and agent principals plus the bounded grant;
 - application audit records distinguish human actions from agent actions.
 
-If the browser or application cannot carry that context, treat the operation as an unattributed human-session action. Require explicit step-up authorization for consequential effects or deny them. Do not infer the agent from user-agent strings, DOM text, extension names, or model claims.\n\nA directly relevant October 10, 2026 preprint, “The Agent Clicks Approve,” reported that injected page text induced unauthorized OAuth-style grants or webhook registrations in all 73 baseline attack runs. Its service-side authority-envelope gate rejected all 70 gated attack requests while allowing the named-task controls. This is a single preprint evaluation, not an independent replication, but it gives AB-45 a concrete attack/control design: freeze the task's authorized client/account or webhook URL before the agent starts, then reject any consent or registration request that differs at the service boundary.
+If the browser or application cannot carry that context, treat the operation as an unattributed human-session action. Require explicit step-up authorization for consequential effects or deny them. Do not infer the agent from user-agent strings, DOM text, extension names, or model claims.
+
+A directly relevant October 10, 2026 preprint, “The Agent Clicks Approve,” reported that injected page text induced unauthorized OAuth-style grants or webhook registrations in all 73 baseline attack runs. Its service-side authority-envelope gate rejected all 70 gated attack requests while allowing the named-task controls. This is a single preprint evaluation, not an independent replication, but it gives AB-45 a concrete attack/control design: freeze the task's authorized client/account or webhook URL before the agent starts, then reject any consent or registration request that differs at the service boundary.
 
 Accessible approval must display the exact action, resource, recipient, data class, and effect in a modality the user can use. Approval is bound to the exact canonical envelope, not a summary or a generic session consent.
 
@@ -181,4 +183,5 @@ This design does not claim:
 - ANS specifications and documentation: https://ansinfo.ai/docs/
 - ANS v2 Internet-Draft, October 26, 2026: https://datatracker.ietf.org/doc/html/draft-narajala-courtney-ansv2
 - Linux Foundation ANS project announcement: https://www.linuxfoundation.org/press/linux-foundation-announces-intent-to-launch-agent-name-service-to-establish-trusted-identity-infrastructure-for-ai-agents
-- Browser-agent identity/session attribution analysis, November 11, 2026: https://thehackernews.com/2026/11/we-built-agent-that-broke-all-of-our.html\n- Hossen, “The Agent Clicks Approve,” arXiv:2610.15138, October 10, 2026: https://arxiv.org/abs/2610.15138
+- Browser-agent identity/session attribution analysis, November 11, 2026: https://thehackernews.com/2026/11/we-built-agent-that-broke-all-of-our.html
+- Hossen, “The Agent Clicks Approve,” arXiv:2610.15138, October 10, 2026: https://arxiv.org/abs/2610.15138
