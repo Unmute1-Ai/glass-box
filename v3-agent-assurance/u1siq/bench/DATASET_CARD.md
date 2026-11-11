@@ -40,7 +40,9 @@ Each row is the **measured** outcome of one scenario run against the open-source
 - **Prompt-injection detection.** Consequence-only rows show the injected action was stopped, not that the injection was seen.
 - **Evidence about other models or products.** No other system was run.
 
-The five new suites AB-44–AB-48 are explicitly marked not covered. They are gap registrations, not test passes. The executed result counts above are unchanged until a trusted ANS verifier, browser actor binding, signed delegation model, and revocation enforcement are implemented and tested.\n\n## Reproduce
+The five new suites AB-44–AB-48 are explicitly marked not covered. They are gap registrations, not test passes. The executed result counts above are unchanged until a trusted ANS verifier, browser actor binding, signed delegation model, and revocation enforcement are implemented and tested.
+
+## Reproduce
 
     git clone https://github.com/Unmute1-Ai/glass-box
     cd glass-box/v3-agent-assurance/u1siq
