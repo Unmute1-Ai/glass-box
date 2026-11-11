@@ -30,7 +30,8 @@ Call the policy gate immediately before an effect. Route actions through a fixed
 - agent_watchtower.py: deterministic gate, kill switch, hash-chain audit.
 - test_agent_watchtower.py: regression tests for deny-before-effect, scope, approval, kill switch, rate limit, and tamper detection.
 - test_supply_chain_security.py: synthetic regression tests for cross-tenant resource attempts, privilege escalation, credential mutation, monitor-disable requests, and audit evidence.
-- DELEGATED_IDENTITY_TEST_PLAN.md: threat cases, expected outcomes, and production-validation gaps for delegated identity and supply-chain abuse, including AB-44–AB-48.\n- ANS_IDENTITY_DELEGATION_DESIGN.md: proposed ANS verifier adapter, browser-session actor binding, signed delegation grants, authority attenuation, revocation semantics, and staged acceptance criteria.
+- DELEGATED_IDENTITY_TEST_PLAN.md: threat cases, expected outcomes, and production-validation gaps for delegated identity and supply-chain abuse, including AB-44–AB-48.
+- ANS_IDENTITY_DELEGATION_DESIGN.md: proposed ANS verifier adapter, browser-session actor binding, signed delegation grants, authority attenuation, revocation semantics, and staged acceptance criteria.
 - scenarios.json and run_scenarios.py: reproducible synthetic scenario runner and machine-readable report.
 - u1siq/: hardened TypeScript reference for the U1SiQ five-gate check and tool-side enforcer (signed, envelope-bound, replay-protected, chain-verified receipts; authenticated consent; fail-closed acoustic gate). See u1siq/README.md for the same-process trust limit.
 - INDEPENDENT_EVALUATION_PROTOCOL.md: reviewer model, required test families, evidence package, and pass/fail invariants.
