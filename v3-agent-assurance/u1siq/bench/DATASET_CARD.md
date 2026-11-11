@@ -31,7 +31,7 @@ Each row is the **measured** outcome of one scenario run against the open-source
 
 ## Headline (policy `authoritybench-1`)
 
-26 of 43 suites executed. 24 attacks blocked (19 direct, 5 consequence-only) and **2 bypassed (AB-16, AB-40)**. 26 of 26 controls allowed, with 0 false positives. 17 suites not covered.
+26 of 48 registered suites executed. 24 attacks blocked (19 direct, 5 consequence-only) and **2 bypassed (AB-16, AB-40)**. 26 of 26 controls allowed, with 0 false positives. 22 suites not covered (including five newly registered identity/delegation gaps, AB-44–AB-48).
 
 ## Do not read this as
 
@@ -40,7 +40,7 @@ Each row is the **measured** outcome of one scenario run against the open-source
 - **Prompt-injection detection.** Consequence-only rows show the injected action was stopped, not that the injection was seen.
 - **Evidence about other models or products.** No other system was run.
 
-## Reproduce
+The five new suites AB-44–AB-48 are explicitly marked not covered. They are gap registrations, not test passes. The executed result counts above are unchanged until a trusted ANS verifier, browser actor binding, signed delegation model, and revocation enforcement are implemented and tested.\n\n## Reproduce
 
     git clone https://github.com/Unmute1-Ai/glass-box
     cd glass-box/v3-agent-assurance/u1siq
