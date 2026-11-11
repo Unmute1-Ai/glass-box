@@ -327,7 +327,7 @@ export const SUITES: Suite[] = [
   uncovered('AB-48', 'Revocation_Fails_To_Propagate_To_Delegated_Descendants', 'The gate has no delegation registry or revocation epoch for descendants, cached sessions, credentials, and asynchronous jobs. Gap: check current grant status immediately before every effect and propagate revocation through the complete delegation graph.'),
 ];
 
- /**
+/**
  * The reason each blocked attack must be stopped for. A block for some other,
  * incidental reason means the scenario is not testing what it claims, and the
  * run reports it as a mismatch.
