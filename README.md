@@ -4,6 +4,14 @@
 
 Public evidence repository for the U1 control plane: separation of agent capability from execution authority.
 
+## Public testing program
+
+**Independent testers wanted.** Start with the [U1 Public Testing Program](public-testing/README.md). It provides a clean reproduction path, a challenge matrix, and a structured report template. The program begins with the frozen v2.7 synthetic benchmark; proposed extensions are not represented as already-tested results.
+
+- [Tester onboarding](public-testing/README.md)
+- [Challenge matrix](public-testing/CHALLENGE_MATRIX.md)
+- [External reproduction report template](public-testing/REPORT_TEMPLATE.md)
+
 ## Start here — v2.7-reproducible
 
 **Release ID:** `u1-control-plane-evidence-v2.7-reproducible`
@@ -46,7 +54,7 @@ These directories are separate tracks. Their presence does not extend the v2.7 b
 
 ## Review and contribution
 
-See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and [PRODUCTION_READINESS.md](PRODUCTION_READINESS.md). Preserve historical evidence and identify the exact version when reporting results.
+See [`CONTRIBUTING.md`](CONTRIBUTING.md), [`SECURITY.md`](SECURITY.md), and [`PRODUCTION_READINESS.md`](PRODUCTION_READINESS.md). Preserve historical evidence and identify the exact version when reporting results.
 
 ---
 
