@@ -42,7 +42,7 @@ The existing S01–S18 cases and four unit tests are listed in [METHODOLOGY.md](
 
 ## Submit a reproducible report
 
-Open a GitHub issue in this repository using the **External reproduction report** template. Include:
+Open a GitHub issue in this repository using the [External reproduction report](../.github/ISSUE_TEMPLATE/external-reproduction-report.md) template. Include:
 - Release ID and commit SHA.
 - Operating system and Python version.
 - Exact commands run.
