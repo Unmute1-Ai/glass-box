@@ -11,6 +11,7 @@ Public evidence repository for the U1 control plane: separation of agent capabil
 - [Tester onboarding](public-testing/README.md)
 - [Challenge matrix](public-testing/CHALLENGE_MATRIX.md)
 - [External reproduction report template](public-testing/REPORT_TEMPLATE.md)
+- [Industry compatibility track: Microsoft transparency, audit evidence, and Apple accessibility permissions](public-testing/INDUSTRY_COMPATIBILITY_TRACK.md)
 
 ## Start here — v2.7-reproducible
 
@@ -47,6 +48,7 @@ See [`v2.6-enterprise/`](v2.6-enterprise/) for the historical package (manifest,
 | --- | --- |
 | [v2.8-sentinel-evaluator/](v2.8-sentinel-evaluator/) | Sentinel evaluator |
 | [v2.9-sentinel-model/](v2.9-sentinel-model/) | Sentinel model work |
+| [v2.10-sentinel-hardening/](v2.10-sentinel-hardening/) | Approval hardening and bounded AAT/OAuth synthetic evaluators |
 | [briefops/](briefops/) | BriefOps workspace |
 | [v3-briefops/](v3-briefops/) | Versioned BriefOps track |
 

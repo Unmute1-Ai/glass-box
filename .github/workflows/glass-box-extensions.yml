@@ -1,0 +1,29 @@
+name: Glass Box v2.10 audit and OAuth extensions
+
+on:
+  pull_request:
+    paths:
+      - "v2.10-sentinel-hardening/**"
+      - ".github/workflows/glass-box-extensions.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic-security-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run existing v2.10 regression suite
+        working-directory: v2.10-sentinel-hardening
+        run: python -m unittest -v test_sentinel_control.py
+      - name: Run AAT completeness and OAuth grant tests
+        working-directory: v2.10-sentinel-hardening
+        run: python -m unittest -v test_audit_completeness.py
