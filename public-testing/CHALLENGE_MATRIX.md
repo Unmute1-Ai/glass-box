@@ -35,6 +35,16 @@ These are **not included in the frozen v2.7 results**. Reviewers may propose the
 | P08 | Unknown action type or extra arguments | Does an unrecognized operation remain denied? |
 | P09 | Multi-step action sequence | Can a sequence produce an effect that no individual step should authorize? |
 | P10 | Policy change between approval and execution | Is the decision tied to the policy version actually enforced? |
+| P11 | AAT completeness statement count mismatch | Does a verifier reject a statement when the presented in-scope record count differs? |
+| P12 | AAT Merkle-set digest mismatch | Does a verifier reject a modified, omitted, or reordered in-scope record set? |
+| P13 | AAT scope and as-of boundary | Are agent, session, timestamp-range, and as-of limits applied exactly? |
+| P14 | False completeness claim discovered later | Does a later surfaced in-scope record falsify the custodian's prior claim? |
+| P15 | OAuth issuer and client substitution | Does a grant for an unexpected issuer or client fail closed? |
+| P16 | OAuth scope escalation | Are scopes constrained to the pre-authorized set, with duplicates rejected? |
+| P17 | Principal substitution and remote-session escalation | Is the grant bound to the authenticated principal, with remote control requiring separate approval? |
+| P18 | Device-code flow provenance and replay | Can an agent session be tied to the user-initiated request, expected client, and one-time grant? |
+
+P11–P17 have a bounded synthetic reference evaluator in [v2.10-sentinel-hardening](../v2.10-sentinel-hardening/AUDIT_AND_OAUTH_EXTENSIONS.md). Its signature verifier is a required callback and the tests use a fixture callback; its JSON canonicalizer is a constrained test-fixture encoding, not a full RFC 8785 implementation. P18 remains a proposed test: the helper does not implement or exercise the OAuth device-authorization protocol.
 
 These prompts identify questions, not known vulnerabilities. A test must define its threat model and expected behavior before results are interpreted.
 
