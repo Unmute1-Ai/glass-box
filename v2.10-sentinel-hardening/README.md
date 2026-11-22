@@ -17,6 +17,18 @@ The v2.8 test adapter only tracks previously seen tokens. It accepts arbitrary u
 
 `issue()` is a trusted approval-service operation. The application must authenticate the approver and enforce approval policy before calling it. An HTTP request must never directly construct an authenticated `Principal`, call `issue()`, or choose policy/store/executor dependencies. The test-only `AtomicNonceStore` is intentionally retained solely to isolate orchestration regression tests and is not a deployable approval store.
 
+## New bounded evaluator extensions
+
+See [AUDIT_AND_OAUTH_EXTENSIONS.md](AUDIT_AND_OAUTH_EXTENSIONS.md), [audit_completeness.py](audit_completeness.py), and [test_audit_completeness.py](test_audit_completeness.py).
+
+The added tests cover AAT v11-style scope/count/Merkle-set checks and synthetic OAuth grant binding (issuer, client, principal, scope, expiry, and separate remote-session approval). They do **not** implement a complete AAT signature stack, RFC 8785 canonicalizer, OAuth device-authorization flow, identity provider, or live integration.
+
+Run the added tests separately:
+
+```sh
+python3 -m unittest -v test_audit_completeness.py
+```
+
 ## Verification
 
 Python 3.10+, standard library only:
@@ -27,6 +39,8 @@ python3 -m unittest -v
 ```
 
 19 tests passed locally on 2026-09-17: 10 existing policy/replay regressions and 9 new cases covering expiry during review, expiry during final reload, hung review, unissued approvals, binding tampering, concurrent connections and restart replay, store expiry, database failure, and valid one-shot execution. Concurrent tests use separate SQLite connections and threads, not a multi-host database.
+
+The newly added `test_audit_completeness.py` is a separate suite and is not included in that historical 19-test result. It must be run independently before any pass claim is made.
 
 ## Remaining production blockers
 
