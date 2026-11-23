@@ -55,7 +55,17 @@ def run_check(mode):
             shutil.rmtree(work, ignore_errors=True)
 
 
-with gr.Blocks(title="U1 Glass Box Public Test Lab") as demo:
+# Vercel Speed Insights initialization script
+# This script prepares the app for Speed Insights tracking when deployed on Vercel
+SPEED_INSIGHTS_SCRIPT = """
+<script>
+  window.si = window.si || function () { 
+    (window.siq = window.siq || []).push(arguments); 
+  };
+</script>
+"""
+
+with gr.Blocks(title="U1 Glass Box Public Test Lab", head=SPEED_INSIGHTS_SCRIPT) as demo:
     gr.Markdown("""
 # U1 Glass Box · Public Test Lab
 

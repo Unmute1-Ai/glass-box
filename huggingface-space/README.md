@@ -19,3 +19,9 @@ Read the claims boundary before interpreting results:
 https://github.com/Unmute1-Ai/glass-box/blob/6f69ff051cc6ef67363cfe4fbb944c93b4a7da22/v2.7-reproducible/CLAIMS.md
 
 This is a synthetic benchmark reproduction interface, not a security certification.
+
+## Performance Monitoring
+
+This app includes Vercel Speed Insights integration for performance monitoring. The Speed Insights initialization script is embedded in the application and will automatically track Core Web Vitals and performance metrics when the app is deployed on Vercel's platform.
+
+**Note:** Speed Insights data collection only works when deployed to Vercel. It will not collect metrics during local development or when hosted on other platforms (like Hugging Face Spaces) unless configured with a custom endpoint.
