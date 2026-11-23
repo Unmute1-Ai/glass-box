@@ -10,6 +10,11 @@ REPO_URL = "https://github.com/Unmute1-Ai/glass-box.git"
 FROZEN_COMMIT = "6f69ff051cc6ef67363cfe4fbb944c93b4a7da22"
 RELEASE_DIR = "v2.7-reproducible"
 
+# Vercel Web Analytics script
+VERCEL_ANALYTICS_HEAD = """
+<script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
+"""
+
 
 def checkout_release():
     work = Path(tempfile.mkdtemp(prefix="u1-glassbox-"))
@@ -92,4 +97,4 @@ This Space checks the exact pinned source revision. It does not run a live model
 """)
 
 if __name__ == "__main__":
-    demo.launch()
+    demo.launch(head=VERCEL_ANALYTICS_HEAD)
